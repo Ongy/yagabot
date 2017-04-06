@@ -113,6 +113,8 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Config.cs" />
+    <Compile Include="Command.cs" />
     <Compile Include="INIFile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -157,7 +159,10 @@
     <ProjectReference Include="..\TwitchIRC\TwitchIRC.csproj">
       <Project>{1f6e0386-64a9-439b-a570-b9c46dbc95c9}</Project>
       <Name>TwitchIRC</Name>
-    </ProjectReference>
+  </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+      <Reference Include="Newtonsoft.Json"/>.
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">

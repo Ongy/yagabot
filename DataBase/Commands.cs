@@ -2,9 +2,9 @@
 using System;
 
 namespace DataBase {
+
     public class Commands {
 
-        
         private DataSet1 ds = new DataSet1();
         private static readonly string xmlfile = "commands.xml";
         private static Commands instance;
@@ -31,6 +31,7 @@ namespace DataBase {
                 return true;
             }
         }
+
         public bool RemoveCommand(string cmdName) {
 
             for (int i = 0; i < ds.Commands.Rows.Count; i++) {
@@ -44,57 +45,19 @@ namespace DataBase {
         }
 
         public string GetCommand(string cmdName) {
-
-            //string tmp = "";
-
             for (int i = 0; i < ds.Commands.Rows.Count; i++) {
-
-                if (cmdName.Equals(ds.Commands.Rows[i]["cmdName"].ToString())) {
-		/* we can early exit here, also the toStringed thingy is equal
-		 * to cmdName, so unless we want it to make a copy, we can just
-		 * return cmdName here
-		 */
+                if (cmdName.Equals(ds.Commands.Rows[i]["cmdName"].ToString()))
                     return cmdName;
-                    //tmp = ds.Commands.Rows[i]["cmdString"].ToString();
-		    /* for single return statement (coding style!) I would go
-		     * with break for early exit out of the loop:
-		     *
-		     * tmp = cmdName;
-		     * break;
-		     */
-                }
             }
 
             return "";
-            //return tmp;
         }
 
         public bool CheckCommand(string cmdName) {
-		/* This is equal to GetCommand in the body, so we can use the
-		 * already existing code
-		 * If GetCommand does not duplicate, == should also be ok to
-		 * compare the results
-		 */
             return !"".Equals(GetCommand(cmdName));
-//            bool check = false;
-//
-//            for (int i = 0; i < ds.Commands.Rows.Count; i++) {
-//                if (cmdName.Equals(ds.Commands.Rows[i]["cmdName"].ToString()))
-//                    check = true;
-//            }
-//                return check;
-            
-
         }
 
-        
-
         public static string petRandom() {
-		/* Put this into an array, so we can simply add another line at
-		 * the end without modifying other code.
-		 * Also It may be a good idea to move this into a store lilke
-		 * the commands, so it can be modified without touching source
-		 */
             string [] sentences =
                 { "The rabite is happy! yagaHappy"
                 , "It cuddles up to your hand and purrs"
@@ -104,24 +67,6 @@ namespace DataBase {
             Random rnd = new Random();
 
             return sentences[rnd.Next(0, sentences.Length)];
-            //int rndNo = rnd.Next(1, 5);
-            //string rndTake = "" + rndNo;
-            //switch (rndTake) {
-            //    case "1":
-            //        petRabite = "The rabite is happy! yagaHappy";
-            //        break;
-            //    case "2":
-            //        petRabite = "It cuddles up to your hand and purrs";
-            //        break;
-            //    case "3":
-            //        petRabite = "It hromps your hand! yagaHROMP ouch!";
-            //        break;
-            //    case "4":
-            //        petRabite = "It looks at you in confusion, thinking that you would feed it yagaDerp ";
-            //        break;
-            //    
-            //}
-            //return petRabite;
         }
 
         public static string hromp(int hrompExpPlus) {
@@ -140,7 +85,6 @@ namespace DataBase {
                 hrompLevelUp =  "" + hrompLevelAfter;
             }
             return hrompLevelUp;
-                
         }
 
         private static int hrompGetLevel(string owner) {
@@ -236,10 +180,6 @@ namespace DataBase {
 
             return hrompLevel;
         }
-
-        
-
-
 
     }
 }

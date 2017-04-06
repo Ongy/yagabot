@@ -12,10 +12,12 @@ using System.IO;
 using System.Collections;
 using DataBase;
 using Nocksoft.IO.ConfigFiles;
+using TwitchBot;
 
 namespace Database {
     public partial class Form1 :Form {
 
+        private Config conf = Config.instance();
         private string channel = Variables.settingsGetData("general", "channel");
 
         private TwitchIRC.TwitchIRC irc = new TwitchIRC.TwitchIRC();
@@ -24,29 +26,18 @@ namespace Database {
 	 * hurt either, since the commands singleton is never reloaded
 	 */
         private Commands cmds = Commands.Instance();
-        
-
-
 
         public Form1() {
+            Config.instance();
             InitializeComponent();
 
-            //irc.connect();
-            //irc.join();
-
-            //var c = chat();
             getData();
             checkBoxes();
-
-
-
-
         }
 
         private async Task chat() {
 
             try {
-
                 string data;
 
                 string user;
@@ -61,12 +52,7 @@ namespace Database {
 
 
                 while ((data = await irc.receive()) != null) {
-
                     chatBoxRaw.AppendText(data + Environment.NewLine);
-
-
-
-
 
                     if (data.Contains("PING")) {
                         irc.send("PONG", ":tmi.twitch.tv");
@@ -109,7 +95,7 @@ namespace Database {
                         roomid = data.Split(dataSep)[11];
                         userid = data.Split(dataSep)[17];
                         mod = data.Split(dataSep)[9].Equals("1");
-                        if ((mod == false) && (roomid == userid))
+                        if (roomid.Equals(userid))
                             mod = true;
                         message = data.Split(new string[] { channel + " :" }, StringSplitOptions.None)[1];
                         if (user == "") {
@@ -131,6 +117,14 @@ namespace Database {
 			 * And drop the !
 			 */
                         if (DateTime.Now - lastMessage > TimeSpan.FromSeconds(3)) {
+                            if (message[0] == '!') {
+                                Command cmd = Config.instance().getCommand(message.Substring(1));
+                                if (cmd != null) {
+                                    string resp = cmd.getResponse().Replace("{user}", user);
+                                    irc.sendMsg(resp);
+                                }
+                            }
+
 				/* So, I saw it being used, we have runtime
 				 * creatable commands.\
 				 * All static comands should (imo) be moved
@@ -163,17 +157,9 @@ namespace Database {
                                     irc.sendMsg("Available commands: !foodbox, !quote, !meow, !lore%, !hug, !hromp, !pet, !hype, !megahype, !enoughhype, !legend, !d2guide, !moo, !secret, !glitchless");
                                     break;
 
-                                case "!cuddle":
-                                    irc.sendMsg("The rabite cuddles up to " + user + " yagaHappy");
-                                    break;
-
                                 case "!quote":
                                     string quote = Variables.quoteRandom();
                                     irc.sendMsg(quote);
-                                    break;
-
-                                case "!meow":
-                                    irc.sendMsg("Yagameowth to the rescue! CoolCat");
                                     break;
 
                                 case "!discord":
@@ -181,45 +167,9 @@ namespace Database {
                                     irc.sendMsg("We are on discord! " + discord);
                                     break;
 
-                                case "!lore%":
-                                    irc.sendMsg("Yagamoth tells the story of the game while also explaining the speedrun. This leaves little time to respond to chat. Thank you for understanding, and feel free to just whisper or PM him :)");
-                                    break;
-
-                                case "!hug":
-                                    irc.sendMsg(user + " sends some hugs into the chat");
-                                    break;
-
                                 case "!pet":
                                     string petHromp = Commands.petRandom();
                                     irc.sendMsg(user + " tries to pet the Rabite. " + petHromp);
-                                    break;
-                                    
-                                case "!legend":
-                                    irc.sendMsg("Who is a legend? YOU ARE A LEGEND!!");
-                                    break;
-
-                                case "!hype":
-                                    irc.sendMsg("ʰʸᵖᵉ ʰʸᵖᵉ ʰʸᵖᵉ ʰʸᵖᵉ ʰʸᵖᵉ ");
-                                    break;
-
-                                case "!megahype":
-                                    irc.sendMsg("ʰʸᵖᵉ... hype.. Hype.. HYPE! " + user + " SENDS ALL THE HYPE TO THE CHAT!");
-                                    break;
-
-                                case "!enoughhype":
-                                    irc.sendMsg("There can never be enough hype!");
-                                    break;
-
-                                case "!d2guide":
-                                    irc.sendMsg("Diablo 2 speedrun guides: http://www.speedrun.com/d2lod/guide/849dl also check out mrllama's youtube guides: https://www.youtube.com/playlist?list=PLchTMRijDSBzG-0ZiXPj_YuV9W9j1Ldj5");
-                                    break;
-
-                                case "!moo":
-                                    irc.sendMsg("There is no cow level! Everything you believe you have heard about it is false!");
-                                    break;
-
-                                case "!glitchless":
-                                    irc.sendMsg("Rules concerning the \"Glitchless\" category can be found here: http://pastebin.com/m2AHCxFf");
                                     break;
 
                                 case "!secret":
@@ -245,7 +195,7 @@ namespace Database {
                                     }
 
                                     break;
-                                    
+
                                 case "!hromp":
                                     if (hrompCooldown.ContainsKey(user)) {
                                         string hrompCooldownSpanString = Variables.settingsGetData("timer", "timerHrompCooldown");
@@ -267,8 +217,7 @@ namespace Database {
                                         }
                                         hrompCooldown.Add(user, DateTime.Now);
                                     }
-                                    
-                                    
+
                                     break;
 
                                 case "!hromp new":
@@ -280,16 +229,12 @@ namespace Database {
                                         else {
                                             irc.sendMsg("A new rabite was born! But " + user + " already owns one, so the little guy wanders off into the wild yagaDerp");
                                         }
-                                        
-                                        
+
                                     }
                                     break;
 
-                               
-
                                 default:
                                     break;
-
                             }
 
                             /*foodbox starts with food btw.*/
@@ -300,11 +245,6 @@ namespace Database {
                                 irc.sendMsg(foodboxCmd);
 
                             }
-                            
-
-
-
-
 
                             if (cmds.CheckCommand(message)) {
                                 irc.sendMsg(cmds.GetCommand(message));
@@ -312,7 +252,6 @@ namespace Database {
 
                             //adding items to the list of eatable things
                             if (message.StartsWith("!foodboxadd")) {
-
                                 char[] foodboxSep = { '#' };
                                 string[] foodboxChecker = message.Split(foodboxSep, 5);
 
@@ -320,7 +259,6 @@ namespace Database {
                                     Variables.foodNew(foodboxChecker[1], foodboxChecker[2], foodboxChecker[3], foodboxChecker[4]);
                                     irc.sendMsg(foodboxChecker[1] + " added as possibility to the Foodbox");
                                 }
-                                
                             }
 
                             //increasing foodbox Quantity of a chosen type by 1
@@ -365,8 +303,6 @@ namespace Database {
                                         irc.sendMsg("No such item used. Contact a mod to get it added");
                                     }
                                 }
-                                
-
                             }
 
                             //add a quote
@@ -381,7 +317,6 @@ namespace Database {
                                 }
 
                             }
-
 
                             //pure textbased commands
                             char[] messageSep = { ' ' };
@@ -406,13 +341,9 @@ namespace Database {
                                     irc.sendMsg("Command doesn't exist");
                             }
 
-                            
-
                             if (message.StartsWith("!")) {
                                 lastMessage = DateTime.Now;
                             }
-                             
-
                         }
                     }
 
@@ -420,11 +351,10 @@ namespace Database {
 
                         char[] dataSep = { '=', ';' };
                         user = data.Split(dataSep)[5];
-                        
+
                         message = data.Split(new string[] { "yagabot :" }, StringSplitOptions.None)[1];
 
-                        
-                        chatBox.SelectionColor = Color.Blue;                         
+                        chatBox.SelectionColor = Color.Blue;
                         chatBox.AppendText(DateTime.Now + " " + user + ": " + message + Environment.NewLine);
 
                         if (message == "hi")
@@ -432,12 +362,7 @@ namespace Database {
 
                         if (message == "!hype")
                             irc.sendWhisper("secret hype!", user);
-
                     }
-
-
-
-
                 }
             }
             catch {
@@ -484,12 +409,9 @@ namespace Database {
 
         private void timer1_Tick(object sender, EventArgs e) {
 
-            
-
             bool foodboxCheck = Variables.foodEmpty();
 
             if (foodboxCheck == false) {
-                
                 string timerFoodboxFilled = Variables.settingsGetData("timer", "timerFoodboxFilled");
                 int timerFoodboxFilledInt = Convert.ToInt32(timerFoodboxFilled);
                 timer1.Interval = (timerFoodboxFilledInt * 60000);
@@ -506,14 +428,11 @@ namespace Database {
                     foodboxResult = "" + foodboxRnd;
 
                     foodboxQuantity = Variables.foodQuantityNum(foodboxResult);
-                    
-                }  
+                }
 
-                
                 string foodboxTaken = Variables.foodRandom(foodboxResult);
 
                 irc.sendMsg(foodboxTaken);
-                
                 int foodExp = Variables.foodGetExp(foodboxResult);
 		/* looking at this, hromp should be Bool? */
                 string lvlUp = Commands.hromp(foodExp);
@@ -528,9 +447,6 @@ namespace Database {
                 timer1.Interval = (timerFoodboxEmptyInt * 60000);
                 irc.sendMsg("The foodbox is Empty! We require more food!");
             }
-            
-
-
         }
 
         private void buttonConnect_Click(object sender, EventArgs e) {
@@ -592,12 +508,9 @@ namespace Database {
                     labelTimerEnabled.Text = "Disabled";
                 }
             }
-            
-
         }
 
         private void checkBoxes() {
-
             string checkboxAutoConnectState = Variables.settingsGetData("general", "autoconnect");
             string checkboxAutoTimerState = Variables.settingsGetData("general", "autotimer");
             string checkboxAutoAnnouncerState = Variables.settingsGetData("general", "autoannouncer");
@@ -614,11 +527,10 @@ namespace Database {
                     checkBoxAutoannouncer.Checked = true;
                 }
 
-                if (checkboxAutoEmoteState == "true") {
+                if (checkboxAutoEmoteState.Equals("true")) {
                     checkBoxMeEmote.Checked = true;
                 }
             }
-            
 
             //causees if checkboxes are checked
             if (checkBoxAutoconnect.Checked == true) {
@@ -699,13 +611,15 @@ namespace Database {
 
         private void checkBoxMeEmote_CheckedChanged(object sender, EventArgs e) {
             string checkboxState;
-            if (checkBoxMeEmote.Checked == true) {
+            if (checkBoxMeEmote.Checked) {
                 checkboxState = "true";
             }
             else {
                 checkboxState = "false";
             }
+
             Variables.settingsSaveData("general", "emote_me", checkboxState);
+            irc.useSlashMe = checkBoxMeEmote.Checked;
         }
 
         private void timerAnnouncer_Tick(object sender, EventArgs e) {
@@ -732,7 +646,7 @@ namespace Database {
             string directory = Path.GetDirectoryName(Application.ExecutablePath);
             System.Diagnostics.Process.Start(directory + "/settings.ini");
         }
-        
+
         private void buttonOpenVariables_Click(object sender, EventArgs e) {
             string directory = Path.GetDirectoryName(Application.ExecutablePath);
             System.Diagnostics.Process.Start(directory + "/variables.ini");

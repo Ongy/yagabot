@@ -1,0 +1,57 @@
+[
+    {
+        "cmdStr": "meow",
+        "response": "Yagameowth to the rescue! CoolCat",
+        "lvl": 0
+    },
+    {
+        "cmdStr": "lore%",
+        "response": "Yagamoth tells the story of the game while also explaining the speedrun. This leaves little time to respond to chat. Thank you for understanding, and feel free to just whisper or PM him :)",
+        "lvl": 0
+    },
+    {
+        "cmdStr": "cuddle",
+        "response": "The rabite cuddles up to {user} yagaHappy",
+        "lvl": 0
+    },
+    {
+        "cmdStr": "hug",
+        "response": "{user} sends some hugs into the chat",
+        "lvl": 0
+    },
+    {
+        "cmdStr": "legend",
+        "response": "Who is a legend? YOU ARE A LEGEND!!",
+        "lvl": 0
+    },
+    {
+        "cmdStr": "hype",
+        "response": "ʰʸᵖᵉ ʰʸᵖᵉ ʰʸᵖᵉ ʰʸᵖᵉ ʰʸᵖᵉ ",
+        "lvl": 0
+    },
+    {
+        "cmdStr": "megahype",
+        "response": "ʰʸᵖᵉ... hype.. Hype.. HYPE! {user} SENDS ALL THE HYPE TO THE CHAT!",
+        "lvl": 0
+    },
+    {
+        "cmdStr": "enoughhype",
+        "response": "There can never be enough hype!",
+        "lvl": 0
+    },
+    {
+        "cmdStr": "d2guide",
+        "response": "Diablo 2 speedrun guides: http://www.speedrun.com/d2lod/guide/849dl also check out mrllama's youtube guides: https://www.youtube.com/playlist?list=PLchTMRijDSBzG-0ZiXPj_YuV9W9j1Ldj5",
+        "lvl": 0
+    },
+    {
+        "cmdStr": "moo",
+        "response": "There is no cow level! Everything you believe you have heard about it is false!",
+        "lvl": 0
+    },
+    {
+        "cmdStr": "glitchless",
+        "response": "Rules concerning the \"Glitchless\" category can be found here: http://pastebin.com/m2AHCxFf",
+        "lvl": 0
+    }
+]

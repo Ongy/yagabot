@@ -7,7 +7,7 @@ using DataBase;
 namespace TwitchIRC {
 
     public class TwitchIRC {
-        
+
         private TcpClient IRCConnection = null;
         private NetworkStream ns = null;
         private StreamReader sr = null;
@@ -19,35 +19,24 @@ namespace TwitchIRC {
         private string oauth = Database.Variables.settingsGetData("general", "oauth");
 
         private string channel = Database.Variables.settingsGetData("general", "channel");
-        
-	/* Move this into long living scope, no reason to load it each time
-	 * (reduce IO, the SSD will thank you)
-	 */
-        private string emote = Database.Variables.settingsGetData("general", "emote_me");
+
+        public bool useSlashMe = Database.Variables.settingsGetData("general", "emote_me").Equals("true");
+
 
         public void send(string cmd, string data) {
             sw.WriteLine(cmd + " " + data);
         }
 
         public void sendMsg(string text) {
-
-            //string emote = Database.Variables.settingsGetData("general", "emote_me");
-            string emote_me = "";
-            if (emote == "true") {
-                emote_me = "/me ";
-            }
-            else {
-                emote_me = "";
+            string cmd = "";
+            if (useSlashMe) {
+                cmd = "/me ";
             }
 
-	    /* we got it, so use it */
-	    send("PRIVMSG", channel + " :" + emote_me + text);
-            //sw.WriteLine("PRIVMSG " + channel + " :" + emote_me + text);
-       
+            send("PRIVMSG", channel + " :" + cmd + text);
         }
 
         public void sendWhisper(string text, string user) {
-	    /* we got it, so use it */
             send("PRIVMSG", "#jtv :/w " + user + " " + text);
         }
 
@@ -61,12 +50,6 @@ namespace TwitchIRC {
         public void connect() {
             try {
                 IRCConnection = new TcpClient(server, port);
-            }
-            catch {
-
-            }
-
-            try {
                 ns = IRCConnection.GetStream();
                 sr = new StreamReader(ns);
                 sw = new StreamWriter(ns);
@@ -81,11 +64,10 @@ namespace TwitchIRC {
 
             }
         }
-        
+
         public Task<string> receive() {
             return sr.ReadLineAsync();
         }
 
-      
     }
 }
