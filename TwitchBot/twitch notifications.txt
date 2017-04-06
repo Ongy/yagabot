@@ -1,0 +1,6 @@
+@broadcaster-lang= :tmi.twitch.tv ROOMSTATE #yagamoth
+:twitchnotify!twitchnotify@twitchnotify.tmi.twitch.tv PRIVMSG #yagamoth :4 viewers resubscribed while you were away!
+
+:twitchnotify!twitchnotify@twitchnotify.tmi.twitch.tv PRIVMSG #yagamoth :Faunsth just subscribed!
+
+:twitchnotify!twitchnotify@twitchnotify.tmi.twitch.tv PRIVMSG #yagamoth :Franzisa subscribed for 8 months in a row!
