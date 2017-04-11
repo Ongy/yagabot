@@ -138,9 +138,6 @@ namespace TwitchBot {
         public Settings settings;
         private static Config obj = null;
 
-        public delegate void TimingChange(Timings timings);
-        public event TimingChange newTimings;
-
         private Config() {
             Console.WriteLine("Reading in config");
             this.loadCommands();
@@ -326,7 +323,6 @@ namespace TwitchBot {
         {
             this.settings.timings.setFrom(newTimings);
             this.saveSettings();
-            this.newTimings(newTimings);
         }
     }
 }
