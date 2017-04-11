@@ -84,16 +84,42 @@ namespace TwitchBot {
             YagaBot.instance().sendMessage(item.foodTake);
         }
 
+        private void changeActive(bool active)
+        {
+            if (active)
+            {
+                CommandRegistry.instance().registerCmdGroup(new string[] { "foodbox", "food", "box" }, printFoods);
+
+                CommandRegistry.instance().registerCommand("delicious", addItem);
+                CommandRegistry.instance().registerCommand("addfood", addFood);
+
+                int seconds = Config.instance().settings.timings.foodboxTimer;
+                TimingManager.instance().addPeriodic("foodbox", seconds, this.doTake);
+            } else
+            {
+                CommandRegistry.instance().unregisterCommand("foodbox");
+                CommandRegistry.instance().unregisterCommand("food");
+                CommandRegistry.instance().unregisterCommand("box");
+                CommandRegistry.instance().unregisterCommand("delicious");
+                CommandRegistry.instance().unregisterCommand("addfood");
+
+                TimingManager.instance().removeTimer("foodbox");
+            }
+        }
+
+        private void timerChanged(int value)
+        {
+            TimingManager.instance().setInterval("foodbox", value);
+        }
 
         public FoodBox() {
             this.contents = new List<FoodItem>();
 
-            CommandRegistry.instance().registerCmdGroup(new string[] { "foodbox", "food", "box" }, printFoods);
+            if (Config.instance().settings.modules.foodbox)
+                this.changeActive(true);
 
-            CommandRegistry.instance().registerCommand("delicious", addItem);
-            CommandRegistry.instance().registerCommand("addfood", addFood);
-
-            TimingManager.instance().addPeriodic("foodbox", 300, this.doTake);
+            Config.instance().settings.modules.foodboxChanged += this.changeActive;
+            Config.instance().settings.timings.foodboxTimerChanged += timerChanged;
         }
     }
 

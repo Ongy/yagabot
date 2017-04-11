@@ -60,6 +60,16 @@ namespace TwitchBot {
             return true;
         }
 
+        public void removeTimer(string name)
+        {
+            if (!this.timers.ContainsKey(name))
+                return;
+
+            Timer timer = this.timers[name];
+            this.timers.Remove(name);
+            timer.Stop();
+        }
+
         public void setInterval(string name, int secs) {
             if (this.timers.ContainsKey(name))
                 this.timers[name].Interval = secs * 1000;

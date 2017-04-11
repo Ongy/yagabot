@@ -140,7 +140,8 @@ namespace TwitchBot {
         }
 
         private static void createModules() {
-            new SecretManager();
+            /* call instance() method once to make sure it is created */
+            SecretManager.instance();
             new QuoteManager();
             new HrompManager();
         }

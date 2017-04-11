@@ -26,8 +26,9 @@ namespace TwitchBot {
 
         private void handleMsg(Message msg, string message) {
             if (message[0] == '!') {
+                int timeout = Config.instance().settings.timings.commandTimeout;
                 Action act = () => this.handleCommand(msg, message.Substring(1).ToLower());
-                TimingManager.instance().protect("command", 3, act);
+                TimingManager.instance().protect("command", timeout, act);
             }
         }
 
@@ -90,6 +91,15 @@ namespace TwitchBot {
 
             for (int i = 1; i < names.Length; ++i)
                 this.hiddenCmds.Add(names[i], func);
+        }
+
+        public void unregisterCommand(string name)
+        {
+            if (this.commands.ContainsKey(name))
+                this.commands.Remove(name);
+
+            if (this.hiddenCmds.ContainsKey(name))
+                this.hiddenCmds.Remove(name);
         }
 
     }

@@ -5,15 +5,118 @@ using Newtonsoft.Json;
 
 namespace TwitchBot {
 
+    class Timings
+    {
+        private int _foodboxTimer;
+        private int _announceTimer;
+        public int foodboxTimer
+        {
+            get { return this._foodboxTimer; }
+            set
+            {
+                this._foodboxTimer = value;
+                if (this.foodboxTimerChanged != null)
+                    this.foodboxTimerChanged(value);
+            }
+        }
+        public int announceTimer
+        {
+            get { return this._announceTimer; }
+            set
+            {
+                this._announceTimer = value;
+                if (this.announceTimerChanged != null)
+                    this.announceTimerChanged(value);
+            }
+        }
+        public int foodboxTimeout;
+        public int hrompTimeout;
+        public int commandTimeout;
+
+        public delegate void TimerChanged(int value);
+
+        public event TimerChanged foodboxTimerChanged;
+        public event TimerChanged announceTimerChanged;
+
+        public Timings()
+        {
+            this.foodboxTimer = 300;
+            this.announceTimer = 140;
+
+            this.foodboxTimeout = 15;
+            this.hrompTimeout = 10;
+            this.commandTimeout = 3;
+        }
+    }
+
+    class Modules
+    {
+        private bool _announce;
+        private bool _secret;
+        private bool _foodbox;
+        public bool announce
+        {
+            get { return this._announce; }
+            set { this._announce = value;
+                if (this.announceChanged !=null)
+                    this.announceChanged(value); }
+        }
+        public bool secret
+        {
+            get { return this._secret; }
+            set { this._secret = value;
+                if (this.secretChanged != null)
+                    this.secretChanged(value); }
+        }
+        public bool foodbox
+        {
+            get { return this._foodbox; }
+            set { this._foodbox = value;
+                if (this.foodboxChanged != null)
+                    this.foodboxChanged(value); }
+        }
+
+        public delegate void ModuleStateChanged(bool newState);
+        public event ModuleStateChanged announceChanged;
+        public event ModuleStateChanged secretChanged;
+        public event ModuleStateChanged foodboxChanged;
+
+        public Modules()
+        {
+            this.announce = this.secret = this.foodbox = true;
+        }
+
+        public Modules(bool announce, bool secret, bool foodbox)
+        {
+            this.announce = announce;
+            this.secret = secret;
+            this.foodbox = foodbox;
+        }
+    }
+
     class Settings {
         public string channel;
         public string oauth;
         public string username;
+        public bool autoconnect;
+        public Timings timings;
+        public Modules modules;
 
-        public Settings(string channel, string oauth, string username) {
+        public Settings()
+        {
+            this.channel = this.oauth = this.username = "";
+            this.autoconnect = false;
+            this.timings = new Timings();
+            this.modules = new Modules();
+        }
+
+        public Settings(string channel, string oauth, string username, bool autoconnect, Timings timings, Modules modules) {
             this.channel = channel;
             this.oauth = oauth;
             this.username = username;
+            this.autoconnect = autoconnect;
+            this.timings = timings;
+            this.modules = modules;
         }
     }
 
@@ -23,9 +126,12 @@ namespace TwitchBot {
         private Dictionary<string, Rabite> rabites;
         public List<FoodItem> foods = null;
         public List<Command> commands = null;
+        public List<Announcement> announces = null;
         public Settings settings;
         private static Config obj = null;
 
+        public delegate void TimingChange(Timings timings);
+        public event TimingChange newTimings;
 
         private Config() {
             Console.WriteLine("Reading in config");
@@ -34,6 +140,7 @@ namespace TwitchBot {
             this.loadFoods();
             this.loadRabites();
             this.loadSettings();
+            this.loadAnnounces();
 
             /**
              * NOTE: This is a default list of people allowed to bot-maintance
@@ -86,11 +193,37 @@ namespace TwitchBot {
         }
 
         private void loadSettings() {
-            this.settings = loadFromFile<Settings>(@"settings.json");
+            try
+            {
+                this.settings = loadFromFile<Settings>(@"settings.json");
+            } catch
+            {
+                this.settings = new Settings();
+                this.saveSettings();
+            }
         }
 
         public void saveSettings() {
             writeToFile<Settings>(@"settings.json", this.settings);
+        }
+
+        private void loadAnnounces()
+        {
+            this.announces = loadData<List<Announcement>>(@"announcements.json");
+
+            if (this.announces == null)
+                this.announces = new List<Announcement>();
+        }
+
+        private void saveAnnounces()
+        {
+            writeData<List<Announcement>>(@"announcements.json", this.announces);
+        }
+
+        public void setAnnounces(List<Announcement> list)
+        {
+            this.announces = list;
+            this.saveAnnounces();
         }
 
         private void loadRabites() {
@@ -179,6 +312,13 @@ namespace TwitchBot {
             }
 
             return null;
+        }
+
+        public void setTimings(Timings newTimings)
+        {
+            this.settings.timings = newTimings;
+            this.saveSettings();
+            this.newTimings(newTimings);
         }
     }
 }
