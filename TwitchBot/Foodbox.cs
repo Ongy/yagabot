@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Text;
 using System.Collections.Generic;
 
@@ -80,7 +81,9 @@ namespace TwitchBot {
 
             Random rand = new Random();
             FoodItem item = this.contents[rand.Next(this.contents.Count)];
-            this.contents = new List<FoodItem>();
+
+            /* Remove all duplicates, then remove the item we just ate */
+            this.contents = this.contents.Distinct().ToList().FindAll((FoodItem x) => !x.foodName.Equals(item.foodName));
             YagaBot.instance().sendMessage(item.foodTake);
         }
 
@@ -109,7 +112,7 @@ namespace TwitchBot {
 
         private void timerChanged(int value)
         {
-            TimingManager.instance().setInterval("foodbox", value);
+            TimingManager.instance().setInterval("foodbox", value, this.doTake);
         }
 
         public FoodBox() {
@@ -122,5 +125,4 @@ namespace TwitchBot {
             Config.instance().settings.timings.foodboxTimerChanged += timerChanged;
         }
     }
-
 }

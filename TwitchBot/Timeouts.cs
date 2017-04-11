@@ -53,7 +53,7 @@ namespace TwitchBot {
 
             Timer timer = new Timer(secs * 1000);
 
-            Console.WriteLine("Added timer: {0}", name);
+            Console.WriteLine("Added timer: {0} every {1} secs", name, secs);
             timer.Elapsed += (Object source, ElapsedEventArgs e) => act();
             timer.AutoReset = timer.Enabled = true;
 
@@ -71,9 +71,12 @@ namespace TwitchBot {
             timer.Stop();
         }
 
-        public void setInterval(string name, int secs) {
-            if (this.timers.ContainsKey(name))
-                this.timers[name].Interval = secs * 1000;
+        public void setInterval(string name, int secs, Action act) {
+            if (this.timers.ContainsKey(name)) {
+                this.timers[name].Stop();
+                this.timers.Remove(name);
+                this.addPeriodic(name, secs, act);
+            }
         }
 
     }

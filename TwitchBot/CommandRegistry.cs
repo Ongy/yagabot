@@ -12,7 +12,8 @@ namespace TwitchBot {
             this.commands = new Dictionary<string, Func<Message, string, string>>();
             this.hiddenCmds = new Dictionary<string, Func<Message, string, string>>();
 
-            this.commands.Add("commands", listCommands);
+            this.commands.Add("commands", this.listCommands);
+            this.commands.Add("addcommand", this.addCommand);
 
             YagaBot.instance().chatReceived += this.handleMsg;
         }
@@ -27,7 +28,7 @@ namespace TwitchBot {
         private void handleMsg(Message msg, string message) {
             if (message[0] == '!') {
                 int timeout = Config.instance().settings.timings.commandTimeout;
-                Action act = () => this.handleCommand(msg, message.Substring(1).ToLower());
+                Action act = () => this.handleCommand(msg, message.Substring(1));
                 TimingManager.instance().protect("command", timeout, act);
             }
         }
@@ -48,6 +49,21 @@ namespace TwitchBot {
             return builder.ToString();
         }
 
+        private string addCommand(Message msg, string command) {
+            if (!msg.isMod())
+                return "You need moderator privileges to add a command";
+            int lvl = 0;
+            string[] splits = command.Split(Constants.spaceArray, 3);
+            try {
+                lvl = Convert.ToInt32(splits[1]);
+            } catch {
+                return "Failed to parse the permission level.";
+            }
+
+            Command cmd = new Command(splits[0].ToLower(), splits[2], lvl);
+            Config.instance().addCommand(cmd);
+            return String.Format("Added the new command: {0}", cmd.cmdStr);
+        }
 
         private void handleCommand(Message msg, string message) {
             string[] splits = message.Split(Constants.spaceArray, 2);

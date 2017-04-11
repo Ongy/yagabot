@@ -268,6 +268,10 @@ namespace TwitchBot {
                 this.commands = new List<Command>();
         }
 
+        private void saveCommands() {
+            writeData<List<Command>>(@"commands.json", this.commands);
+        }
+
         private void loadLists() {
             this.lists = loadData<Dictionary<string, List<string>>>(@"lists.json");
 
@@ -317,6 +321,11 @@ namespace TwitchBot {
             }
 
             return null;
+        }
+
+        public void addCommand(Command cmd) {
+            this.commands.Add(cmd);
+            this.saveCommands();
         }
 
         public void setTimings(Timings newTimings)

@@ -169,7 +169,7 @@ namespace TwitchBot
             {
                 timings.foodboxTimeout = Convert.ToInt32(this.FoodboxTimeoutText.Text);
                 timings.hrompTimeout = Convert.ToInt32(this.HrompTimeoutText.Text);
-                timings.foodboxTimer = Convert.ToInt32(this.FoodboxTimerText.Text);
+                timings.announceTimer = Convert.ToInt32(this.AnnounceTimerText.Text);
                 timings.hrompTimeout = Convert.ToInt32(this.HrompTimeoutText.Text);
                 timings.commandTimeout = Convert.ToInt32(this.CommandTimeoutText.Text);
                 Config.instance().setTimings(timings);

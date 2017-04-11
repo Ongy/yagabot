@@ -7,7 +7,7 @@ namespace TwitchBot {
         Command()
         { }
 
-        Command(string cmd, string resp, int lvl) {
+        public Command(string cmd, string resp, int lvl) {
             this.cmdStr = cmd;
             this.response = resp;
             this.lvl = lvl;

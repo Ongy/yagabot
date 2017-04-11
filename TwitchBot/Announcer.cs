@@ -59,7 +59,7 @@ namespace TwitchBot
 
         private void changeInterval(int interval)
         {
-            TimingManager.instance().setInterval("announcer", interval);
+            TimingManager.instance().setInterval("announcer", interval, this.doAnnounce);
         }
 
         private void changeState(bool active)

@@ -21,7 +21,7 @@ namespace TwitchBot {
             if (enabled)
             {
                 CommandRegistry.instance().registerCommand("secret", doSecret);
-                CommandRegistry.instance().registerHiddenCmd("setsecret", doSecret);
+                CommandRegistry.instance().registerHiddenCmd("setsecret", setSecret);
             } else
             {
                 CommandRegistry.instance().unregisterCommand("secret");
@@ -59,11 +59,11 @@ namespace TwitchBot {
             if (msg.isMod()) {
                 try {
                     this.secret = Convert.ToInt32(content) - 57;
-                } finally {
+                } catch {
                     if (this.secret == 0)
                         this.secret = 5400;
                 }
-                this.doSecret(msg, content);
+                return this.doSecret(msg, content);
             }
             return null;
         }
