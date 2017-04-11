@@ -47,6 +47,14 @@ namespace TwitchBot {
             this.hrompTimeout = 10;
             this.commandTimeout = 3;
         }
+
+        internal void setFrom(Timings n) {
+            this.foodboxTimer = n.foodboxTimer;
+            this.announceTimer = n.announceTimer;
+            this.foodboxTimeout = n.foodboxTimeout;
+            this.hrompTimeout = n.hrompTimeout;
+            this.commandTimeout = n.commandTimeout;
+        }
     }
 
     class Modules
@@ -316,7 +324,7 @@ namespace TwitchBot {
 
         public void setTimings(Timings newTimings)
         {
-            this.settings.timings = newTimings;
+            this.settings.timings.setFrom(newTimings);
             this.saveSettings();
             this.newTimings(newTimings);
         }
