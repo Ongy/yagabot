@@ -28,7 +28,6 @@
             this.chatBox = new System.Windows.Forms.RichTextBox();
             this.chatInput = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -126,11 +125,6 @@
             this.button1.Name = "button1";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // timer1
-            // 
-            this.timer1.Interval = 10000;
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // tabControl1
             // 
@@ -486,7 +480,6 @@
             resources.ApplyResources(this.buttonTimerFoodboxEnable, "buttonTimerFoodboxEnable");
             this.buttonTimerFoodboxEnable.Name = "buttonTimerFoodboxEnable";
             this.buttonTimerFoodboxEnable.UseVisualStyleBackColor = true;
-            this.buttonTimerFoodboxEnable.Click += new System.EventHandler(this.buttonTimerFoodboxEnable_Click);
             // 
             // buttonTimerFoodbox
             // 
@@ -611,7 +604,6 @@
         private System.Windows.Forms.RichTextBox chatBox;
         private System.Windows.Forms.TextBox chatInput;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;

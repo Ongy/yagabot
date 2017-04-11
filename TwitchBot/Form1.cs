@@ -17,357 +17,39 @@ using TwitchBot;
 namespace Database {
     public partial class Form1 :Form {
 
-        private Config conf = Config.instance();
-        private string channel = Variables.settingsGetData("general", "channel");
-
-        private TwitchIRC.TwitchIRC irc = new TwitchIRC.TwitchIRC();
-	/*
-	 * The reason for singletons is not to have to do this, but it doesn't
-	 * hurt either, since the commands singleton is never reloaded
-	 */
-        private Commands cmds = Commands.Instance();
-
         public Form1() {
-            Config.instance();
             InitializeComponent();
 
             getData();
+            setFromConfig();
             checkBoxes();
+
+            this.Closing += this.closing;
+
+            YagaBot.instance().lineReceived += this.appendRaw;
+            YagaBot.instance().chatReceived += this.appendChat;
         }
 
-        private async Task chat() {
+        void closing(object s, CancelEventArgs e) {
+            YagaBot.instance().stop();
+        }
 
-            try {
-                string data;
+        private void appendRaw(string raw) {
+            chatBoxRaw.AppendText(raw + Environment.NewLine);
+        }
 
-                string user;
-                bool mod;
-                string message;
-                string roomid;
-                string userid;
-                DateTime lastMessage;
-                lastMessage = DateTime.Now;
-                Dictionary<string, DateTime> hrompCooldown = new Dictionary<string, DateTime>();
-                Dictionary<string, DateTime> foodboxCooldown = new Dictionary<string, DateTime>();
+        private void appendChat(TwitchBot.Message msg, string message) {
+            bool highlight = message.Contains("yag") || message.Contains("Yag");
 
-
-                while ((data = await irc.receive()) != null) {
-                    chatBoxRaw.AppendText(data + Environment.NewLine);
-
-                    if (data.Contains("PING")) {
-                        irc.send("PONG", ":tmi.twitch.tv");
-                    }
-
-                    //sub and resub announcments
-                    if ((data.Contains("twitchnotify")) && (data.Contains("subscribed"))) {
-
-                        char[] subSep = { ':' };
-                        string subMsg = data.Split(subSep)[2];
-
-                        if (subMsg.Contains("months")) {
-                            char[] subSep2 = { ' ' };
-                            string subUser = subMsg.Split(subSep2)[0];
-                            string subMonths = subMsg.Split(subSep2)[3];
-
-                            int subMonths2 = Convert.ToInt32(subMonths);
-                            string subHromps = "";
-                            for (int x = 0; x < subMonths2; x++) {
-                                subHromps = subHromps + "yagaHROMP ";
-                            }
-
-                            irc.sendMsg("THANK YOU " + subUser + " FOR " + subMonths + " HROMPs IN A ROW! " + subHromps);
-                        }
-                        else {
-                            char[] subSep2 = { ' ' };
-                            string subUser = subMsg.Split(subSep2)[0];
-
-                            irc.sendMsg("THANK YOU " + subUser + " FOR SUPPORTING THE CHANNEL yagaHROMP yagaHROMP yagaHROMP");
-                        }
-			    /* We can exit here with continue? Would be worth a * test */
-
-                    }
-
-
-                    if ((data.Contains("PRIVMSG")) && (!data.Contains("twitchnotify"))) {
-
-                        char[] dataSep = { '=', ';' };
-                        user = data.Split(dataSep)[5];
-                        roomid = data.Split(dataSep)[11];
-                        userid = data.Split(dataSep)[17];
-                        mod = data.Split(dataSep)[9].Equals("1");
-                        if (roomid.Equals(userid))
-                            mod = true;
-                        message = data.Split(new string[] { channel + " :" }, StringSplitOptions.None)[1];
-                        if (user == "") {
-                            char[] dataSep2 = { '!', '@' };
-                            user = data.Split(dataSep2)[2];
-                        }
-                        if ((message.Contains("yag")) || (message.Contains("Yag"))) {
-                            chatBox.SelectionColor = Color.White;
-                            chatBox.SelectionBackColor = Color.Red;
-                        }
-                        chatBox.AppendText(DateTime.Now + " " + user + ": " + message + Environment.NewLine);
-
-                        chatBox.SelectionStart = chatBox.Text.Length;
-                        chatBox.ScrollToCaret();
-
-                        message = message.ToLower();
-
-			/* This should be preseeded with a test message[0] == '!'
-			 * And drop the !
-			 */
-                        if (DateTime.Now - lastMessage > TimeSpan.FromSeconds(3)) {
-                            if (message[0] == '!') {
-                                Command cmd = Config.instance().getCommand(message.Substring(1));
-                                if (cmd != null) {
-                                    string resp = cmd.getResponse().Replace("{user}", user);
-                                    irc.sendMsg(resp);
-                                }
-                            }
-
-				/* So, I saw it being used, we have runtime
-				 * creatable commands.\
-				 * All static comands should (imo) be moved
-				 * into the runtime comands config file!
-				 * Probably with some {user} like markup, to
-				 * make the semi-static commands usable aswell.
-				 *
-				 * For the others, I think a hashmap from
-				 * string to void function(string) would make
-				 * sense.
-				 * then go with something like:
-				 *
-				 * splits = message.split(' ')
-				 * map[splits[0]](splits[1])
-				 *
-				 * This would force users to ad ' ', which is
-				 * currently not required, but imo worth it.
-				 */
-                            switch (message) {
-
-                                case "!help":
-                                    irc.sendMsg("Use !foodbox for info on how to feed the rabite, use !commands for info about additional commands");
-                                    break;
-
-				    /* This should be a coded command, but read
-				     * from the mentioned list and hashmap, not
-				     * use a hardcoded list
-				     */
-                                case "!commands":
-                                    irc.sendMsg("Available commands: !foodbox, !quote, !meow, !lore%, !hug, !hromp, !pet, !hype, !megahype, !enoughhype, !legend, !d2guide, !moo, !secret, !glitchless");
-                                    break;
-
-                                case "!quote":
-                                    string quote = Variables.quoteRandom();
-                                    irc.sendMsg(quote);
-                                    break;
-
-                                case "!discord":
-                                    string discord = Variables.varRead("discord");
-                                    irc.sendMsg("We are on discord! " + discord);
-                                    break;
-
-                                case "!pet":
-                                    string petHromp = Commands.petRandom();
-                                    irc.sendMsg(user + " tries to pet the Rabite. " + petHromp);
-                                    break;
-
-                                case "!secret":
-                                    string secret = Variables.varRead("secret");
-                                    int secretint = Convert.ToInt32(secret);
-                                    secretint++;
-                                    double percent = ((10000 / 173) * secretint);
-                                    percent = percent / 100;
-                                    string percentstring = percent.ToString("0.0#");
-                                    secret = "" + secretint;
-                                    if (secret == "173") {
-                                        irc.sendMsg("OH NO! THE HROMPARADE!");
-                                        irc.sendMsg("yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP");
-                                        irc.sendMsg("yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP");
-                                        irc.sendMsg("yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP");
-                                        irc.sendMsg("yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP yagaHROMP");
-                                        secret = "0";
-                                    }
-                                    else {
-                                        irc.sendMsg(percent + "%");
-                                        Variables.varWrite("secret", secret);
-
-                                    }
-
-                                    break;
-
-                                case "!hromp":
-                                    if (hrompCooldown.ContainsKey(user)) {
-                                        string hrompCooldownSpanString = Variables.settingsGetData("timer", "timerHrompCooldown");
-                                        int hrompCooldownSpan = Convert.ToInt32(hrompCooldownSpanString);
-                                        if (DateTime.Now - (hrompCooldown[user]) > TimeSpan.FromMinutes(hrompCooldownSpan)) {
-                                            irc.sendMsg("The rabite plays around and trains with Yagamoth yagaHappy It earned 1 Exp!");
-                                            string hrompLevelUp = Commands.hromp(1);
-                                            if (hrompLevelUp != "Nein") {
-                                                irc.sendMsg("The rabite leveled up! yagaHappy It is now level " + hrompLevelUp);
-                                            }
-                                            hrompCooldown[user] = DateTime.Now;
-                                        }
-                                    }
-                                    else {
-                                        irc.sendMsg("The rabite plays around and trains with " + user + " yagaHappy It earned 1 Exp!");
-                                        string hrompLevelUp = Commands.hromp(1);
-                                        if (hrompLevelUp != "Nein") {
-                                            irc.sendMsg("The rabite leveled up! yagaHappy It is now level " + hrompLevelUp + " yagaHROMP");
-                                        }
-                                        hrompCooldown.Add(user, DateTime.Now);
-                                    }
-
-                                    break;
-
-                                case "!hromp new":
-                                    if (mod == true) {
-                                        bool hrompNew = Variables.hrompNew(user);
-                                        if (hrompNew == true) {
-                                            irc.sendMsg("A new rabite was born! " + user + " adopted it!");
-                                        }
-                                        else {
-                                            irc.sendMsg("A new rabite was born! But " + user + " already owns one, so the little guy wanders off into the wild yagaDerp");
-                                        }
-
-                                    }
-                                    break;
-
-                                default:
-                                    break;
-                            }
-
-                            /*foodbox starts with food btw.*/
-                            if (message.StartsWith("!foodbox") || message.StartsWith("!food") || message.StartsWith("!box")) {
-                                string foodboxCmd = Variables.foodList();
-                                string foodboxAmount = Variables.foodAmount();
-                                irc.sendMsg("type \"!delicious {food}\" into chat! The box currently contains " + foodboxAmount + " items.");
-                                irc.sendMsg(foodboxCmd);
-
-                            }
-
-                            if (cmds.CheckCommand(message)) {
-                                irc.sendMsg(cmds.GetCommand(message));
-                            }
-
-                            //adding items to the list of eatable things
-                            if (message.StartsWith("!foodboxadd")) {
-                                char[] foodboxSep = { '#' };
-                                string[] foodboxChecker = message.Split(foodboxSep, 5);
-
-                                if (foodboxChecker.Length == 5 && foodboxChecker[0].Equals("!foodboxadd") && mod == true) {
-                                    Variables.foodNew(foodboxChecker[1], foodboxChecker[2], foodboxChecker[3], foodboxChecker[4]);
-                                    irc.sendMsg(foodboxChecker[1] + " added as possibility to the Foodbox");
-                                }
-                            }
-
-                            //increasing foodbox Quantity of a chosen type by 1
-                            if (message.StartsWith("!delicious")) {
-                                if((message.StartsWith("!delicious ") == false)) {
-                                    message = message.Replace("!delicious", "!delicious ");
-                                }
-
-
-                                char[] foodboxSep = { ' ' };
-                                string[] foodboxChecker = message.Split(foodboxSep, 2);
-                                string foodboxOK = Variables.foodCheck(foodboxChecker[1]);
-                                if (foodboxChecker.Length == 2 && foodboxChecker[0].Equals("!delicious")) {
-                                    if (foodboxOK == "OK") {
-
-                                        if (foodboxCooldown.ContainsKey(user)) {
-                                            string foodboxCooldownSpanString = Variables.settingsGetData("timer", "timerfoodboxCooldown");
-                                            int foodboxCooldownSpan = Convert.ToInt32(foodboxCooldownSpanString);
-                                            if (DateTime.Now - (foodboxCooldown[user]) > TimeSpan.FromMinutes(foodboxCooldownSpan)) {
-                                                string foodboxText = Variables.foodInc(foodboxChecker[1]);
-                                                string foodboxCount = Variables.foodQuantity(foodboxChecker[1]);
-                                                if (foodboxText.Contains("{user}")) {
-                                                    foodboxText = foodboxText.Replace("{user}", user);
-                                                }
-                                                irc.sendMsg(foodboxText);
-                                                foodboxCooldown[user] = DateTime.Now;
-                                            }
-                                        }
-                                        else {
-
-                                            string foodboxText = Variables.foodInc(foodboxChecker[1]);
-                                            string foodboxCount = Variables.foodQuantity(foodboxChecker[1]);
-                                            if (foodboxText.Contains("{user}")) {
-                                                foodboxText = foodboxText.Replace("{user}", user);
-                                            }
-                                            irc.sendMsg(foodboxText);
-                                            foodboxCooldown.Add(user, DateTime.Now);
-                                        }
-
-                                    }
-                                    else {
-                                        irc.sendMsg("No such item used. Contact a mod to get it added");
-                                    }
-                                }
-                            }
-
-                            //add a quote
-                            if (message.StartsWith("!addquote")) {
-
-                                char[] quoteSep = { ' ' };
-                                string[] quoteChecker = message.Split(quoteSep, 2);
-
-                                if (quoteChecker.Length == 2 && quoteChecker[0].Equals("!addquote")) {
-                                    Variables.quoteNew(quoteChecker[1]);
-                                    irc.sendMsg("Quote added: " + quoteChecker[1]);
-                                }
-
-                            }
-
-                            //pure textbased commands
-                            char[] messageSep = { ' ' };
-                            string[] cmdChecker = message.Split(messageSep, 3);
-
-                            if (cmdChecker.Length == 3 && cmdChecker[0].Equals("!addcmd") && mod == true) {
-                                bool check = cmds.AddCommand(cmdChecker[1], cmdChecker[2]);
-
-                                if (check)
-                                    irc.sendMsg("Command Added");
-                                else
-                                    irc.sendMsg("Command exists already");
-                            }
-
-                            if (cmdChecker.Length == 2 && cmdChecker[0].Equals("!delcmd") && mod == true) {
-
-                                bool check = cmds.RemoveCommand(cmdChecker[1]);
-
-                                if (check)
-                                    irc.sendMsg("Command Removed");
-                                else
-                                    irc.sendMsg("Command doesn't exist");
-                            }
-
-                            if (message.StartsWith("!")) {
-                                lastMessage = DateTime.Now;
-                            }
-                        }
-                    }
-
-                    if (data.Contains("WHISPER")) {
-
-                        char[] dataSep = { '=', ';' };
-                        user = data.Split(dataSep)[5];
-
-                        message = data.Split(new string[] { "yagabot :" }, StringSplitOptions.None)[1];
-
-                        chatBox.SelectionColor = Color.Blue;
-                        chatBox.AppendText(DateTime.Now + " " + user + ": " + message + Environment.NewLine);
-
-                        if (message == "hi")
-                            irc.sendWhisper("Hello " + user, user);
-
-                        if (message == "!hype")
-                            irc.sendWhisper("secret hype!", user);
-                    }
-                }
+            if (highlight) {
+                chatBox.SelectionColor = Color.White;
+                chatBox.SelectionBackColor = Color.Red;
             }
-            catch {
 
-            }
+            chatBox.AppendText(DateTime.Now + " " + msg.getName() + ": " + message + Environment.NewLine);
+
+            chatBox.SelectionStart = chatBox.Text.Length;
+            chatBox.ScrollToCaret();
         }
 
         private void chatInput_KeyPress(object sender, KeyPressEventArgs e) {
@@ -376,7 +58,7 @@ namespace Database {
 
                 if (e.KeyChar == (char)13) {
 
-                    irc.sendMsg(chatInput.Text);
+                    YagaBot.instance().sendMessage(chatInput.Text);
 
                     chatBox.AppendText(DateTime.Now + " Bot: " + chatInput.Text + Environment.NewLine);
 
@@ -395,7 +77,7 @@ namespace Database {
 
             if (labelConnection.Text == "Connected") {
 
-                irc.sendMsg(chatInput.Text);
+                YagaBot.instance().sendMessage(chatInput.Text);
 
                 chatBox.AppendText(DateTime.Now + " Bot: " + chatInput.Text + Environment.NewLine);
 
@@ -407,58 +89,24 @@ namespace Database {
             }
         }
 
-        private void timer1_Tick(object sender, EventArgs e) {
-
-            bool foodboxCheck = Variables.foodEmpty();
-
-            if (foodboxCheck == false) {
-                string timerFoodboxFilled = Variables.settingsGetData("timer", "timerFoodboxFilled");
-                int timerFoodboxFilledInt = Convert.ToInt32(timerFoodboxFilled);
-                timer1.Interval = (timerFoodboxFilledInt * 60000);
-
-                int foodboxMax = Variables.foodVariety();
-                string foodboxResult = "0";            
-                foodboxMax++;
-                string foodboxQuantity = "0";
-               /*This should really be here */
-                Random rnd = new Random();
-                while (foodboxQuantity == "0") {
-
-                    int foodboxRnd = rnd.Next(1, foodboxMax);
-                    foodboxResult = "" + foodboxRnd;
-
-                    foodboxQuantity = Variables.foodQuantityNum(foodboxResult);
-                }
-
-                string foodboxTaken = Variables.foodRandom(foodboxResult);
-
-                irc.sendMsg(foodboxTaken);
-                int foodExp = Variables.foodGetExp(foodboxResult);
-		/* looking at this, hromp should be Bool? */
-                string lvlUp = Commands.hromp(foodExp);
-                if (lvlUp != "Nein") {
-                    irc.sendMsg("The rabite leveled up! yagaHappy It is now level " + lvlUp + " yagaHROMP");
-                }
-
-            }
-            else {
-                string timerFoodboxEmpty = Variables.settingsGetData("timer", "timerFoodboxEmpty");
-                int timerFoodboxEmptyInt = Convert.ToInt32(timerFoodboxEmpty);
-                timer1.Interval = (timerFoodboxEmptyInt * 60000);
-                irc.sendMsg("The foodbox is Empty! We require more food!");
-            }
-        }
-
         private void buttonConnect_Click(object sender, EventArgs e) {
             connectToTwitch();
         }
 
         private void connectToTwitch() {
-            irc.connect();
-            irc.join();
+            Settings s = Config.instance().settings;
 
-            var c = chat();
+            YagaBot.instance().connect(s.channel, s.username, s.oauth);
             labelConnection.Text = "Connected";
+        }
+
+        private void setFromConfig() {
+            Settings s = Config.instance().settings;
+            textBoxConnectionInfoUser.Text = s.username;
+            textBoxConnectionInfoChannel.Text = s.channel;
+            textBoxConnectionInfoOAuth.Text = s.oauth;
+
+
         }
 
         private void getData() {
@@ -480,12 +128,13 @@ namespace Database {
         }
 
         private void buttonConnectionDataSave_Click(object sender, EventArgs e) {
-            string settingsUser = textBoxConnectionInfoUser.Text;
-            string settingsChannel = textBoxConnectionInfoChannel.Text;
-            string settingsOAuth = textBoxConnectionInfoOAuth.Text;
-            Variables.settingsSaveData("general", "user", settingsUser);
-            Variables.settingsSaveData("general", "channel", settingsChannel);
-            Variables.settingsSaveData("general", "oauth", settingsOAuth);
+            Settings s = Config.instance().settings;
+
+            s.username = textBoxConnectionInfoUser.Text;
+            s.channel = textBoxConnectionInfoChannel.Text;
+            s.oauth = textBoxConnectionInfoOAuth.Text;
+
+            Config.instance().saveSettings();
         }
 
         private void buttonTimerFoodbox_Click(object sender, EventArgs e) {
@@ -493,21 +142,6 @@ namespace Database {
             string timerFoodboxFilled = textBoxTimerFoodboxFilled.Text;
             Variables.settingsSaveData("timer", "timerFoodboxEmpty", timerFoodboxEmpty);
             Variables.settingsSaveData("timer", "timerFoodboxFilled", timerFoodboxFilled);
-        }
-
-        private void buttonTimerFoodboxEnable_Click(object sender, EventArgs e) {
-
-            if (labelConnection.Text == "Connected") {
-
-                if (timer1.Enabled == false) {
-                    timer1.Enabled = true;
-                    labelTimerEnabled.Text = "Enabled";
-                }
-                else {
-                    timer1.Enabled = false;
-                    labelTimerEnabled.Text = "Disabled";
-                }
-            }
         }
 
         private void checkBoxes() {
@@ -535,11 +169,6 @@ namespace Database {
             //causees if checkboxes are checked
             if (checkBoxAutoconnect.Checked == true) {
                 connectToTwitch();
-            }
-
-            if (checkBoxAutotimer.Checked == true) {
-                timer1.Enabled = true;
-                labelTimerEnabled.Text = "Enabled";
             }
 
             if (checkBoxAutoannouncer.Checked == true) {
@@ -619,7 +248,7 @@ namespace Database {
             }
 
             Variables.settingsSaveData("general", "emote_me", checkboxState);
-            irc.useSlashMe = checkBoxMeEmote.Checked;
+            // irc.useSlashMe = checkBoxMeEmote.Checked;
         }
 
         private void timerAnnouncer_Tick(object sender, EventArgs e) {
@@ -632,13 +261,13 @@ namespace Database {
             string varAnnouncer1 = Variables.varRead("announcer1");
             string varAnnouncer2 = Variables.varRead("announcer2");
             if (varDiscord != "") {
-                irc.sendMsg(varDiscord);
+                YagaBot.instance().sendMessage(varDiscord);
             }
             if (varAnnouncer1 != "") {
-                irc.sendMsg(varAnnouncer1);
+                YagaBot.instance().sendMessage(varAnnouncer1);
             }
             if (varAnnouncer2 != "") {
-                irc.sendMsg(varAnnouncer2);
+                YagaBot.instance().sendMessage(varAnnouncer2);
             }
         }
 

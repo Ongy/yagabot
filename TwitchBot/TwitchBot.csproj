@@ -115,6 +115,13 @@
     </Compile>
     <Compile Include="Config.cs" />
     <Compile Include="Command.cs" />
+    <Compile Include="YagaBot.cs" />
+    <Compile Include="Foodbox.cs" />
+    <Compile Include="Hromp.cs" />
+    <Compile Include="Timeouts.cs" />
+    <Compile Include="Quotes.cs" />
+    <Compile Include="Secret.cs" />
+    <Compile Include="CommandRegistry.cs" />
     <Compile Include="INIFile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

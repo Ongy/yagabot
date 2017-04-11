@@ -13,18 +13,26 @@ namespace TwitchIRC {
         private StreamReader sr = null;
         private StreamWriter sw = null;
 
-        private string name = Database.Variables.settingsGetData("general", "user");
+        private string channel = null;
+        private string oauth = null;
+        private string name = null;
+
+        public TwitchIRC(string channel, string name, string oauth) {
+            this.channel = channel;
+            this.name = name;
+            this.oauth = oauth;
+        }
+
         private string server = "irc.chat.twitch.tv";
         private int port = 6667;
-        private string oauth = Database.Variables.settingsGetData("general", "oauth");
-
-        private string channel = Database.Variables.settingsGetData("general", "channel");
-
-        public bool useSlashMe = Database.Variables.settingsGetData("general", "emote_me").Equals("true");
+        public bool useSlashMe = false;
 
 
         public void send(string cmd, string data) {
-            sw.WriteLine(cmd + " " + data);
+            lock(this) {
+                if (sw != null)
+                        sw.WriteLine(cmd + " " + data);
+            }
         }
 
         public void sendMsg(string text) {
@@ -65,8 +73,8 @@ namespace TwitchIRC {
             }
         }
 
-        public Task<string> receive() {
-            return sr.ReadLineAsync();
+        public string receive() {
+            return sr.ReadLine();
         }
 
     }
