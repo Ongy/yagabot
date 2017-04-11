@@ -18,6 +18,7 @@ namespace TwitchBot {
     }
 
     class FoodBox {
+        int emptyTry = 0;
         private static readonly char[] splitArray = { ';' };
         private string foods = null;
         private List<FoodItem> contents;
@@ -58,6 +59,7 @@ namespace TwitchBot {
                     return "No such item used. Contact a mod to get it added";
 
                 this.contents.Add(item);
+                this.emptyTry = 0;
                 return item.foodGive;
             });
         }
@@ -81,7 +83,7 @@ namespace TwitchBot {
         }
 
         private void doTake() {
-            if (this.contents.Count == 0)
+            if (this.contents.Count == 0 && this.emptyTry++ % 4 == 0)
                 YagaBot.instance().sendMessage("The rabite opened the foodbox, but it was empty. yagaScare");
 
             Random rand = new Random();
