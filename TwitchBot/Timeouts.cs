@@ -53,6 +53,7 @@ namespace TwitchBot {
 
             Timer timer = new Timer(secs * 1000);
 
+            Console.WriteLine("Added timer: {0}", name);
             timer.Elapsed += (Object source, ElapsedEventArgs e) => act();
             timer.AutoReset = timer.Enabled = true;
 

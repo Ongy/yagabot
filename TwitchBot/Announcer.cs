@@ -37,10 +37,10 @@ namespace TwitchBot
             foreach (Announcement a in actives)
                 sumOfWeights += a.weight;
 
-            if (sumOfWeights >= 0)
+            if (sumOfWeights <= 0)
                 return;
 
-            int chosen = this.rand.Next(sumOfWeights);
+            int chosen = this.rand.Next(sumOfWeights) + 1;
             Announcement pick = null;
 
             for(int i = 0; i < actives.Count; ++i)

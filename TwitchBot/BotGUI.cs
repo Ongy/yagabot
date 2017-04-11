@@ -173,7 +173,8 @@ namespace TwitchBot
                 timings.hrompTimeout = Convert.ToInt32(this.HrompTimeoutText.Text);
                 timings.commandTimeout = Convert.ToInt32(this.CommandTimeoutText.Text);
                 Config.instance().setTimings(timings);
-            } catch {
+            } catch (Exception exp) {
+                Console.WriteLine("Caught exception while setting times: {0}", exp);
                 this.setTimingsFromConfig();
             }
         }

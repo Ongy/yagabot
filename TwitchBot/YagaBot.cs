@@ -142,6 +142,8 @@ namespace TwitchBot {
         private static void createModules() {
             /* call instance() method once to make sure it is created */
             SecretManager.instance();
+            Announcer.instance();
+            new FoodBox();
             new QuoteManager();
             new HrompManager();
         }
