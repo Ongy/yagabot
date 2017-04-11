@@ -28,6 +28,14 @@ namespace TwitchBot
 
             s.modules.announceChanged += this.changeState;
             s.timings.announceTimerChanged += this.changeInterval;
+
+            YagaBot.instance().chatConnected += this.connectSpam;
+        }
+
+        private void connectSpam() {
+            List<Announcement> actives = Config.instance().announces.FindAll((Announcement x) => x.active);
+            foreach (Announcement announcement in actives)
+                YagaBot.instance().sendMessage(announcement.message);
         }
 
         private void doAnnounce()

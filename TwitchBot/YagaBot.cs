@@ -39,7 +39,7 @@ namespace TwitchBot {
                 string[] splits = current.Split(Constants.spaceArray, 2);
                 switch (splits[0][0]) {
                     case '@':
-                    this.tags = parseTags(splits[0]);
+                    this.tags = parseTags(splits[0].Substring(1));
                     break;
                     case ':':
                     string[] tmp = splits[0].Substring(1).Split(Constants.exclaArray, 2);
@@ -67,7 +67,10 @@ namespace TwitchBot {
         }
 
         public bool isBroadcaster() {
-            return this.tags.ContainsKey("adges") && this.tags["badges"].Contains("broadcaster/1");
+            Console.WriteLine("Checking if broadcaster");
+            if (this.tags.ContainsKey("badges") && this.tags["badges"].Contains("broadcaster/1"))
+                Console.WriteLine("Is broadcaster");
+            return this.tags.ContainsKey("badges") && this.tags["badges"].Contains("broadcaster/1");
         }
 
         public bool isBotOp() {
@@ -109,10 +112,16 @@ namespace TwitchBot {
         Thread thread;
         private bool run = true;
 
+        public delegate void ConnectedChat();
+        public event ConnectedChat chatConnected;
+
         public void connect(string channel, string name, string oauth) {
             this.irc = new TwitchIRC.TwitchIRC(channel, name, oauth);
             irc.connect();
             irc.join();
+
+            if (this.chatConnected != null)
+                this.chatConnected();
 
             thread.Start();
         }
@@ -226,7 +235,6 @@ namespace TwitchBot {
 
         private void handlePRIVMSG(Message msg) {
             string line = msg.content.Split(Constants.spaceArray, 2)[1].Substring(1);
-            Console.WriteLine("Gonna call the receive hook");
             chatReceived(msg, line);
         }
 

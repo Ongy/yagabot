@@ -27,6 +27,7 @@ namespace TwitchBot
 
         void closing(object s, CancelEventArgs e) {
             YagaBot.instance().stop();
+            TimingManager.instance().shutdown();
         }
 
         private void appendRaw(string raw) {

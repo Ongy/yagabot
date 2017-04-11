@@ -79,5 +79,13 @@ namespace TwitchBot {
             }
         }
 
+        public void shutdown() {
+            foreach(KeyValuePair<string, Timer> timer in this.timers) {
+                timer.Value.Stop();
+            }
+
+            this.timers = null;
+        }
+
     }
 }

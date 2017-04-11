@@ -27,7 +27,6 @@ namespace TwitchBot {
             }
         }
 
-
         public QuoteManager() {
             CommandRegistry.instance().registerCommand("quote", this.sendQuote);
             CommandRegistry.instance().registerCommand("addquote", this.addQuote);
