@@ -62,6 +62,11 @@ namespace TwitchBot {
             });
         }
 
+        private string addFrog(Message msg, string itemname)
+        {
+            return this.addFood(msg, "frog");
+        }
+
         private string addFood(Message msg, string definition) {
             if (!msg.isMod())
                 return "You do not have the required permissions to add a food";
@@ -95,11 +100,13 @@ namespace TwitchBot {
 
                 CommandRegistry.instance().registerCommand("delicious", addItem);
                 CommandRegistry.instance().registerCommand("addfood", addFood);
+                CommandRegistry.instance().registerHiddenCmd("deliciousfrog", this.addFrog);
 
                 int seconds = Config.instance().settings.timings.foodboxTimer;
                 TimingManager.instance().addPeriodic("foodbox", seconds, this.doTake);
             } else
             {
+                CommandRegistry.instance().unregisterCommand("deliciousfrog");
                 CommandRegistry.instance().unregisterCommand("foodbox");
                 CommandRegistry.instance().unregisterCommand("food");
                 CommandRegistry.instance().unregisterCommand("box");

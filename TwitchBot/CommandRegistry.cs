@@ -37,11 +37,13 @@ namespace TwitchBot {
             StringBuilder builder = new StringBuilder("The possible commands are: ");
 
             foreach (KeyValuePair<string, Func<Message, string, string>> kv in this.commands) {
+                builder.Append('!');
                 builder.Append(kv.Key);
                 builder.Append(' ');
             }
 
             foreach (Command cmd in Config.instance().commands) {
+                builder.Append('!');
                 builder.Append(cmd.cmdStr);
                 builder.Append(' ');
             }
