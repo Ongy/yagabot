@@ -122,6 +122,7 @@ namespace TwitchBot
             this.AnnounceBox.Checked = modules.announce;
             this.Secretbox.Checked = modules.secret;
             this.FoodboxBox.Checked = modules.foodbox;
+            this.checkBoxAutoconnect.Checked = Config.instance().settings.autoconnect;
         }
 
         private void setAnnouncesFromConfig()

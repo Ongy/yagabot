@@ -30,6 +30,7 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.AddAnnounce = new System.Windows.Forms.Button();
             this.AnnouncerList = new System.Windows.Forms.FlowLayoutPanel();
             this.AnnouncersSet = new System.Windows.Forms.Button();
             this.Secretbar = new System.Windows.Forms.TrackBar();
@@ -68,7 +69,6 @@
             this.buttonConnect = new System.Windows.Forms.Button();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.chatBoxRaw = new System.Windows.Forms.RichTextBox();
-            this.AddAnnounce = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -101,8 +101,8 @@
             // 
             // tabControl1
             // 
-            this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage3);
             resources.ApplyResources(this.tabControl1, "tabControl1");
             this.tabControl1.Name = "tabControl1";
@@ -130,6 +130,13 @@
             resources.ApplyResources(this.tabPage2, "tabPage2");
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // AddAnnounce
+            // 
+            resources.ApplyResources(this.AddAnnounce, "AddAnnounce");
+            this.AddAnnounce.Name = "AddAnnounce";
+            this.AddAnnounce.UseVisualStyleBackColor = true;
+            this.AddAnnounce.Click += new System.EventHandler(this.AddAnnounce_Click);
             // 
             // AnnouncerList
             // 
@@ -375,13 +382,6 @@
             // 
             resources.ApplyResources(this.chatBoxRaw, "chatBoxRaw");
             this.chatBoxRaw.Name = "chatBoxRaw";
-            // 
-            // AddAnnounce
-            // 
-            resources.ApplyResources(this.AddAnnounce, "AddAnnounce");
-            this.AddAnnounce.Name = "AddAnnounce";
-            this.AddAnnounce.UseVisualStyleBackColor = true;
-            this.AddAnnounce.Click += new System.EventHandler(this.AddAnnounce_Click);
             // 
             // BotGUI
             // 
