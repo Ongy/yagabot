@@ -212,7 +212,8 @@ namespace TwitchBot {
             else {
                 char[] subSep2 = { ' ' };
                 string subUser = subMsg.Split(subSep2)[0];
-                userSubscribed(subUser, 0, null);
+                if (this.userSubscribed != null)
+                    userSubscribed(subUser, 0, null);
 
                 irc.sendMsg("THANK YOU " + subUser + " FOR SUPPORTING THE CHANNEL yagaHROMP yagaHROMP yagaHROMP");
             }
@@ -222,7 +223,8 @@ namespace TwitchBot {
             /* We know the command is USERNOTICE here */
             int months = Convert.ToInt32(msg.tags["msg-param-months"]);
 
-            userSubscribed(msg.getName(), months, msg.user);
+            if (this.userSubscribed != null)
+                userSubscribed(msg.getName(), months, msg.user);
             /* 'yagaHROMP ' is 11 chars */
             StringBuilder builder = new StringBuilder(11 * months + 2);
             for (int i = 0; i < months; ++i)
