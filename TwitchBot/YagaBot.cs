@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Text;
 using System.Threading;
 using System.Collections.Generic;
@@ -149,6 +150,11 @@ namespace TwitchBot {
         }
 
         private static void createModules() {
+            StreamWriter file = new StreamWriter("errors.log");
+            file.AutoFlush = true;
+            Console.SetError(file);
+            Console.SetOut(file);
+
             /* call instance() method once to make sure it is created */
             SecretManager.instance();
             Announcer.instance();
