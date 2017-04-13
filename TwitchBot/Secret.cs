@@ -6,10 +6,12 @@ namespace TwitchBot {
         private int secret = 5400;
 
         public delegate void SecretUpdate(int value);
-        public event SecretUpdate secretUpdated;
+        public event SecretUpdate secretUpdated = null;
 
         private SecretManager()
-        {
+        { }
+
+        private void init() {
             if (Config.instance().settings.modules.secret)
                 this.changeEnabled(true);
 
@@ -31,8 +33,10 @@ namespace TwitchBot {
 
         public static SecretManager instance()
         {
-            if (obj == null)
+            if (obj == null) {
                 obj = new SecretManager();
+                obj.init();
+            }
 
             return obj;
         }
@@ -51,7 +55,10 @@ namespace TwitchBot {
             this.secret += 57;
             if (this.secret > 10000)
                 this.secret = 10000;
-            this.secretUpdated(this.secret);
+
+            if (this.secretUpdated != null)
+                this.secretUpdated(this.secret);
+
             return String.Format("{0}.{1}%", secret / 100, secret % 100);
         }
 

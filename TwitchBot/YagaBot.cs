@@ -241,7 +241,8 @@ namespace TwitchBot {
         }
 
         private void handleMessage(string message) {
-            lineReceived(message);
+            if (lineReceived != null)
+                lineReceived(message);
 
             Message msg = new Message(message);
             if (msg.command.Equals("PING")) {

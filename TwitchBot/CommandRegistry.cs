@@ -8,7 +8,9 @@ namespace TwitchBot {
         private Dictionary<string, Func<Message, string, string>> commands;
         private Dictionary<string, Func<Message, string, string>> hiddenCmds;
 
-        private CommandRegistry() {
+        private CommandRegistry() { }
+
+        private void init() {
             this.commands = new Dictionary<string, Func<Message, string, string>>();
             this.hiddenCmds = new Dictionary<string, Func<Message, string, string>>();
 
@@ -19,8 +21,10 @@ namespace TwitchBot {
         }
 
         public static CommandRegistry instance() {
-            if (obj == null)
+            if (obj == null) {
                 obj = new CommandRegistry();
+                obj.init();
+            }
 
             return obj;
         }
