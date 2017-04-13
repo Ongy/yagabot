@@ -52,7 +52,6 @@ namespace TwitchBot {
         }
 
         private string addItem(Message msg, string itemName) {
-            Console.WriteLine("Someone wants to put food into the box");
             return TimingManager.instance().protect(String.Format("foodbox@{0}", msg.user), 5, () => {
                 FoodItem item = findItem(itemName.ToLower());
                 if (item == null)
@@ -66,7 +65,7 @@ namespace TwitchBot {
 
         private string addFrog(Message msg, string itemname)
         {
-            return this.addFood(msg, "frog");
+            return this.addItemFood(msg, "frog");
         }
 
         private string addFood(Message msg, string definition) {
