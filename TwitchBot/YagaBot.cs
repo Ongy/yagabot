@@ -115,8 +115,21 @@ namespace TwitchBot {
         public delegate void ConnectedChat();
         public event ConnectedChat chatConnected;
 
-        public void connect(string channel, string name, string oauth) {
-            this.irc = new TwitchIRC.TwitchIRC(channel, name, oauth);
+        public async void connect() {
+            Settings s = Config.instance().settings;
+            if (s.newauth == null || "".Equals(s.newauth)) {
+                s.newauth = TwitchApi.requestOAuth();
+                Config.instance().saveSettings();
+            }
+
+            TwitchApi api = new TwitchApi(s.newauth);
+            string name = await api.getUsername();
+
+            if (name == null)
+                return;
+
+            Console.WriteLine("Doing this");
+            this.irc = new TwitchIRC.TwitchIRC(s.channel, name, "oauth:" + s.newauth);
             irc.connect();
             irc.join();
 

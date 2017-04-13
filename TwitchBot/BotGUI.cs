@@ -90,17 +90,16 @@ namespace TwitchBot
         }
 
         private void connectToTwitch() {
-            Settings s = Config.instance().settings;
+            YagaBot.instance().connect();
 
-            YagaBot.instance().connect(s.channel, s.username, s.oauth);
             labelConnection.Text = "Connected";
         }
 
         private void setFromConfig() {
             Settings s = Config.instance().settings;
-            textBoxConnectionInfoUser.Text = s.username;
+            textBoxConnectionInfoUser.Text = "<Remove me>";
             textBoxConnectionInfoChannel.Text = s.channel;
-            textBoxConnectionInfoOAuth.Text = s.oauth;
+            textBoxConnectionInfoOAuth.Text = "<Remove me>";
 
             this.setTimingsFromConfig();
             this.setBoxesFromConfig();
@@ -144,9 +143,9 @@ namespace TwitchBot
         private void buttonConnectionDataSave_Click(object sender, EventArgs e) {
             Settings s = Config.instance().settings;
 
-            s.username = textBoxConnectionInfoUser.Text;
+            // s.username = textBoxConnectionInfoUser.Text;
             s.channel = textBoxConnectionInfoChannel.Text;
-            s.oauth = textBoxConnectionInfoOAuth.Text;
+            // s.oauth = textBoxConnectionInfoOAuth.Text;
 
             Config.instance().saveSettings();
         }

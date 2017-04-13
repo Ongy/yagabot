@@ -104,24 +104,22 @@ namespace TwitchBot {
 
     class Settings {
         public string channel;
-        public string oauth;
-        public string username;
+        public string newauth;
         public bool autoconnect;
         public Timings timings;
         public Modules modules;
 
         public Settings()
         {
-            this.channel = this.oauth = this.username = "";
+            this.channel = newauth = "";
             this.autoconnect = false;
             this.timings = new Timings();
             this.modules = new Modules();
         }
 
-        public Settings(string channel, string oauth, string username, bool autoconnect, Timings timings, Modules modules) {
+        public Settings(string channel, string newauth, bool autoconnect, Timings timings, Modules modules) {
             this.channel = channel;
-            this.oauth = oauth;
-            this.username = username;
+            this.newauth = newauth;
             this.autoconnect = autoconnect;
             this.timings = timings;
             this.modules = modules;
