@@ -164,6 +164,7 @@ namespace TwitchBot {
 
         private static T loadFromFile<T>(string file) {
             JsonSerializer serializer = new JsonSerializer();
+            serializer.NullValueHandling = NullValueHandling.Ignore;
             using (StreamReader sw = new StreamReader(file))
             using (JsonReader reader = new JsonTextReader(sw))
             {
@@ -174,6 +175,7 @@ namespace TwitchBot {
         private static void writeToFile<T>(string file, T obj) {
             JsonSerializer serializer = new JsonSerializer();
             serializer.Formatting = Formatting.Indented;
+            serializer.NullValueHandling = NullValueHandling.Ignore;
             using (StreamWriter sw = new StreamWriter(file))
             using (JsonWriter writer = new JsonTextWriter(sw))
             {

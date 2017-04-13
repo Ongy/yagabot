@@ -171,9 +171,9 @@ namespace TwitchBot
             {
                 timings.foodboxTimeout = Convert.ToInt32(this.FoodboxTimeoutText.Text);
                 timings.hrompTimeout = Convert.ToInt32(this.HrompTimeoutText.Text);
-                timings.announceTimer = Convert.ToInt32(this.AnnounceTimerText.Text);
-                timings.hrompTimeout = Convert.ToInt32(this.HrompTimeoutText.Text);
                 timings.commandTimeout = Convert.ToInt32(this.CommandTimeoutText.Text);
+                timings.announceTimer = Convert.ToInt32(this.AnnounceTimerText.Text);
+                timings.foodboxTimer = Convert.ToInt32(this.FoodboxTimerText.Text);
                 Config.instance().setTimings(timings);
             } catch (Exception exp) {
                 Console.WriteLine("Caught exception while setting times: {0}", exp);

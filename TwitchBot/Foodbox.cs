@@ -6,15 +6,23 @@ using System.Collections.Generic;
 namespace TwitchBot {
 
     class FoodItem {
-        public FoodItem(string foodName, string foodGive, string foodTake) {
+        public FoodItem(string foodName, string foodGive, string foodTake, List<string> foodTakes) {
             this.foodName = foodName;
             this.foodGive = foodGive;
             this.foodTake = foodTake;
+            this.foodTakes = foodTakes;
+
+            if (foodTakes == null) {
+                this.foodTakes = new List<string>();
+                this.foodTakes.Add(this.foodTake);
+                this.foodTake = null;
+            }
         }
 
         public readonly string foodName;
         public readonly string foodGive;
         public readonly string foodTake;
+        public readonly List<string> foodTakes;
     }
 
     class FoodBox {
@@ -73,10 +81,15 @@ namespace TwitchBot {
                 return "You do not have the required permissions to add a food";
 
             string[] parts = definition.Split(splitArray);
-            if (parts.Length != 3)
+            if (parts.Length < 3)
                 return "The format of the food item didn't match.\nRequired format: name;give;take";
 
-            Config.instance().addFood(new FoodItem(parts[0], parts[1], parts[2]));
+            List<string> answers = new List<string>();
+
+            for (int i = 2; i < parts.Length; ++i)
+                answers.Add(parts[i]);
+
+            Config.instance().addFood(new FoodItem(parts[0], parts[1], null, answers));
             this.foods = null;
             return String.Format("\"{0}\" has been added", parts[0]);
         }
@@ -90,7 +103,9 @@ namespace TwitchBot {
 
             /* Remove all duplicates, then remove the item we just ate */
             this.contents = this.contents.Distinct().ToList().FindAll((FoodItem x) => !x.foodName.Equals(item.foodName));
-            YagaBot.instance().sendMessage(item.foodTake);
+
+            int choice = rand.Next(item.foodTakes.Count);;
+            YagaBot.instance().sendMessage(item.foodTakes[choice]);
         }
 
         private void changeActive(bool active)
