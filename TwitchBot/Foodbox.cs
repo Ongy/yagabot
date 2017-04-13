@@ -65,7 +65,7 @@ namespace TwitchBot {
 
         private string addFrog(Message msg, string itemname)
         {
-            return this.addItemFood(msg, "frog");
+            return this.addItem(msg, "frog");
         }
 
         private string addFood(Message msg, string definition) {
