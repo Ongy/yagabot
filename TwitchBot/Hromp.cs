@@ -26,8 +26,12 @@ namespace TwitchBot {
         private Rabite current;
         private Rabite newBorn;
 
-        private string rabiteLevel(Rabite rabite, int exp) {
-            string ret = String.Format("{2} played and trained with {0}'s rabite. It earned {1} exp. yagaHappy", rabite.owner, exp, "{user}");
+        private string rabiteLevel(Rabite rabite, bool isOwner, int exp) {
+            string owner = rabite.owner + "'s";
+            if (isOwner)
+                owner = "their";
+
+            string ret = String.Format("{2} played and trained with {0}'s rabite. It earned {1} exp. yagaHappy", owner, exp, "{user}");
             rabite.exp += exp;
             int newLvl = (int) (3 * Math.Log(rabite.exp));
 
@@ -40,10 +44,10 @@ namespace TwitchBot {
             return ret;
         }
 
-        private string lvlRabite(string user, int amount) {
-            Rabite rabite = Config.instance().getRabite(user);
+        private string lvlRabite(Message msg, int amount) {
+            Rabite rabite = Config.instance().getRabite(msg.user);
 
-            return rabiteLevel(rabite, amount);
+            return rabiteLevel(rabite, msg.getName().Equals(rabite.owner), amount);
         }
 
         private string doCreate(Message msg) {
@@ -75,7 +79,7 @@ namespace TwitchBot {
 
             int amount = this.expRand.Next(4) + 1;
 
-            Func<string> func = () => this.lvlRabite(msg.user, amount);
+            Func<string> func = () => this.lvlRabite(msg, amount);
             return TimingManager.instance().protect<string>("hromp@" + msg.user, 5, func);
         }
 

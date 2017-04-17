@@ -36,9 +36,13 @@ namespace TwitchBot {
                 StringBuilder builder = new StringBuilder("Foods: ");
                 foreach (FoodItem item in Config.instance().foods) {
                     builder.Append(item.foodName);
-                    builder.Append(' ');
+                    builder.Append(", ");
                 }
-                this.foods = builder.ToString();
+
+                string tmp = builder.ToString();
+
+                /* Remove the last ", " that got added in after the last item */
+                this.foods = tmp.Substring(0, tmp.Length - 2);
             }
 
             return this.foods;
@@ -49,9 +53,7 @@ namespace TwitchBot {
         }
 
         private static FoodItem findItem(string itemName) {
-            Console.WriteLine("Searching for food: " + itemName);
             foreach(FoodItem item in Config.instance().foods) {
-                Console.WriteLine("Considering food: " + item.foodName);
                 if (item.foodName.Equals(itemName))
                     return item;
             }
