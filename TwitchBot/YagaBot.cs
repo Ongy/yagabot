@@ -149,11 +149,17 @@ namespace TwitchBot {
             thread = new Thread(this.ircLoop);
         }
 
-        private static void createModules() {
+        private static void redirectOutput() {
             StreamWriter file = new StreamWriter("errors.log");
             file.AutoFlush = true;
             Console.SetError(file);
             Console.SetOut(file);
+        }
+
+        private static void createModules() {
+            if (!Config.instance().settings.spectator) {
+                redirectOutput();
+            }
 
             /* call instance() method once to make sure it is created */
             SecretManager.instance();
@@ -184,6 +190,12 @@ namespace TwitchBot {
         public void sendMessage(string message) {
             if (this.irc == null)
                 return;
+
+            if (Config.instance().settings.spectator) {
+                Console.Write("Sending: ");
+                Console.WriteLine(message);
+                return;
+            }
 
             string[] splits = message.Split(Constants.newliArray);
             foreach (string split in splits) {
