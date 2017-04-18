@@ -142,10 +142,7 @@ namespace TwitchBot {
         public FoodBox() {
             this.contents = new List<FoodItem>();
 
-            if (Config.instance().settings.modules.foodbox)
-                this.changeActive(true);
-
-            Config.instance().settings.modules.foodboxChanged += this.changeActive;
+            Config.instance().addModule("foodbox", this.changeActive);
             Config.instance().settings.timings.foodboxTimerChanged += timerChanged;
         }
     }

@@ -23,10 +23,9 @@ namespace TwitchBot
         {
             Settings s = Config.instance().settings;
             this.rand = new Random();
-            if (s.modules.announce)
-                this.changeState(true);
 
-            s.modules.announceChanged += this.changeState;
+            Config.instance().addModule("announce", this.changeState);
+
             s.timings.announceTimerChanged += this.changeInterval;
 
             YagaBot.instance().chatConnected += this.connectSpam;

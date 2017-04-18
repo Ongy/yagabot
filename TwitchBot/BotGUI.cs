@@ -11,13 +11,14 @@ namespace TwitchBot
     public partial class BotGUI :Form {
 
         public BotGUI() {
+            YagaBot.instance();
+
             InitializeComponent();
 
+            /* Force the yagabot to start up stuff */
             setFromConfig();
 
             this.Closing += this.closing;
-
-            YagaBot.instance();
 
 //            YagaBot.instance().lineReceived += this.appendRaw;
             YagaBot.instance().chatReceived += this.appendChat;
@@ -121,12 +122,11 @@ namespace TwitchBot
 
         private void setBoxesFromConfig()
         {
-            Modules modules = Config.instance().settings.modules;
-            this.AnnounceBox.Checked = modules.announce;
-            this.Secretbox.Checked = modules.secret;
-            this.FoodboxBox.Checked = modules.foodbox;
-            this.Hromp.Checked = modules.hromp;
-            this.Kraken.Checked = modules.kraken;
+            this.AnnounceBox.Checked = Config.instance().getModule("announce");
+            this.Secretbox.Checked = Config.instance().getModule("secret");
+            this.FoodboxBox.Checked = Config.instance().getModule("foodbox");
+            this.Hromp.Checked = Config.instance().getModule("hromp");
+            this.Kraken.Checked = Config.instance().getModule("kraken");
             this.checkBoxAutoconnect.Checked = Config.instance().settings.autoconnect;
         }
 
@@ -185,27 +185,6 @@ namespace TwitchBot
             }
         }
 
-        private void AnnounceBox_CheckedChanged(object sender, EventArgs e)
-        {
-            Config.instance().settings.modules.announce = this.AnnounceBox.Checked;
-        }
-
-        private void FoodboxBox_CheckedChanged(object sender, EventArgs e)
-        {
-            Config.instance().settings.modules.foodbox = this.FoodboxBox.Checked;
-        }
-
-        private void Secretbox_CheckedChanged(object sender, EventArgs e)
-        {
-            Config.instance().settings.modules.secret = this.Secretbox.Checked;
-        }
-
-        private void checkBoxAutoconnect_CheckedChanged(object sender, EventArgs e)
-        {
-            Config.instance().settings.autoconnect = this.checkBoxAutoconnect.Checked;
-            Config.instance().saveSettings();
-        }
-
         private void AnnouncersSet_Click(object sender, EventArgs e)
         {
             List<Announcement> list = new List<Announcement>();
@@ -228,14 +207,35 @@ namespace TwitchBot
             this.AnnouncerList.Controls.Add(new AnnounceControl());
         }
 
+        private void AnnounceBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Config.instance().setModule("announce", this.AnnounceBox.Checked);
+        }
+
+        private void FoodboxBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Config.instance().setModule("foodbox", this.FoodboxBox.Checked);
+        }
+
+        private void Secretbox_CheckedChanged(object sender, EventArgs e)
+        {
+            Config.instance().setModule("secret", this.Secretbox.Checked);
+        }
+
+        private void checkBoxAutoconnect_CheckedChanged(object sender, EventArgs e)
+        {
+            Config.instance().settings.autoconnect = this.checkBoxAutoconnect.Checked;
+            Config.instance().saveSettings();
+        }
+
         private void Hromp_CheckedChanged(object sender, EventArgs e)
         {
-            Config.instance().settings.modules.hromp = this.Hromp.Checked;
+            Config.instance().setModule("hromp", this.Hromp.Checked);
         }
 
         private void Kraken_CheckedChanged(object sender, EventArgs e)
         {
-            Config.instance().settings.modules.kraken = this.Kraken.Checked;
+            Config.instance().setModule("kraken", this.Kraken.Checked);
         }
     }
 }

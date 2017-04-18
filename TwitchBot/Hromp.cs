@@ -154,9 +154,7 @@ namespace TwitchBot {
             this.petRand = new Random();
             this.newBorn = null;
 
-            if (Config.instance().settings.modules.hromp) {
-                this.changeActive(true);
-            }
+            Config.instance().addModule("hromp", this.changeActive);
 
             YagaBot.instance().chatReceived += this.setCurrent;
         }

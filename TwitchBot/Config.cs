@@ -57,78 +57,6 @@ namespace TwitchBot {
         }
     }
 
-    class Modules
-    {
-        public delegate void ModuleStateChanged(bool newState);
-
-        private bool _announce;
-        public event ModuleStateChanged announceChanged;
-        public bool announce
-        {
-            get { return this._announce; }
-            set { this._announce = value;
-                if (this.announceChanged !=null)
-                    this.announceChanged(value); }
-        }
-
-        private bool _secret;
-        public event ModuleStateChanged secretChanged;
-        public bool secret
-        {
-            get { return this._secret; }
-            set { this._secret = value;
-                if (this.secretChanged != null)
-                    this.secretChanged(value); }
-        }
-
-        private bool _foodbox;
-        public event ModuleStateChanged foodboxChanged;
-        public bool foodbox
-        {
-            get { return this._foodbox; }
-            set { this._foodbox = value;
-                if (this.foodboxChanged != null)
-                    this.foodboxChanged(value); }
-        }
-
-        private bool _hromp;
-        public event ModuleStateChanged hrompChanged;
-        public bool hromp
-        {
-            get { return this._hromp; }
-            set { this._hromp = value;
-                if (this.hrompChanged != null)
-                    this.hrompChanged(value); }
-        }
-
-        private bool _kraken;
-        public event ModuleStateChanged krakenChanged;
-        public bool kraken
-        {
-            get { return this._kraken; }
-            set
-            {
-                this._kraken= value;
-                if (this.krakenChanged != null)
-                    this.krakenChanged(value);
-            }
-        }
-
-        public Modules()
-        {
-            this.announce = this.secret = this.foodbox = this.hromp = this.kraken = true;
-        }
-
-        public Modules(bool announce, bool secret, bool hromp, bool kraken, bool foodbox)
-        {
-            this.announce = announce;
-            this.secret = secret;
-            this.hromp = hromp;
-            this.foodbox = foodbox;
-            this.kraken = kraken;
-        }
-    }
-
     class Settings {
         public string channel;
         public string oauth;
@@ -136,7 +64,7 @@ namespace TwitchBot {
         public bool autoconnect;
         public bool spectator;
         public Timings timings;
-        public Modules modules;
+        public Dictionary<string, bool> modules;
 
         public Settings()
         {
@@ -144,21 +72,12 @@ namespace TwitchBot {
             this.autoconnect = false;
             this.spectator = false;
             this.timings = new Timings();
-            this.modules = new Modules();
-        }
-
-        public Settings(string channel, string oauth, string username, bool autoconnect, bool spectator, Timings timings, Modules modules) {
-            this.channel = channel;
-            this.oauth = oauth;
-            this.username = username;
-            this.autoconnect = autoconnect;
-            this.spectator = spectator;
-            this.timings = timings;
-            this.modules = modules;
+            this.modules = new Dictionary<string, bool>();
         }
     }
 
     class Config {
+        private Dictionary<string, Action<bool>> modules = new Dictionary<string, Action<bool>>();
         private readonly List<string> defaultMods = new List<string>();
         private Dictionary<string, List<string>> lists = null;
         private Dictionary<string, Rabite> rabites;
@@ -383,6 +302,33 @@ namespace TwitchBot {
         {
             this.settings.timings.setFrom(newTimings);
             this.saveSettings();
+        }
+
+        public void addModule(string name, Action<bool> toggleFun) {
+            Console.Write("Adding module: ");
+            Console.WriteLine(name);
+            this.modules.Add(name, toggleFun);
+
+            if (!this.settings.modules.ContainsKey(name))
+                this.settings.modules.Add(name, true);
+
+            if (this.settings.modules[name])
+                    toggleFun(true);
+        }
+
+        public bool getModule(string name) {
+            Console.Write("Checking module: ");
+            Console.WriteLine(name);
+            if (this.settings.modules.ContainsKey(name))
+                return this.settings.modules[name];
+
+            return false;
+        }
+
+        public void setModule(string name, bool val) {
+            this.settings.modules[name] = val;
+
+            this.modules[name](val);
         }
     }
 }

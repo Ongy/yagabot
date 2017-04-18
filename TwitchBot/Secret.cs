@@ -8,14 +8,10 @@ namespace TwitchBot {
         public delegate void SecretUpdate(int value);
         public event SecretUpdate secretUpdated = null;
 
-        private SecretManager()
-        { }
+        private SecretManager() { }
 
         private void init() {
-            if (Config.instance().settings.modules.secret)
-                this.changeEnabled(true);
-
-            Config.instance().settings.modules.secretChanged += this.changeEnabled;
+            Config.instance().addModule("secret", this.changeEnabled);
         }
 
         private void changeEnabled(bool enabled)

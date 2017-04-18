@@ -102,18 +102,20 @@ namespace TwitchBot {
         }
 
         public void registerCommand(string name, Func<Message, string, string> func) {
-            this.commands.Add(name, func);
+            if (!this.commands.ContainsKey(name))
+                this.commands.Add(name, func);
         }
 
         public void registerHiddenCmd(string name, Func<Message, string, string> func) {
-            this.hiddenCmds.Add(name, func);
+            if (!this.hiddenCmds.ContainsKey(name))
+                this.hiddenCmds.Add(name, func);
         }
 
         public void registerCmdGroup(string[] names, Func<Message, string, string> func) {
-            this.commands.Add(names[0], func);
+            this.registerCommand(names[0], func);
 
             for (int i = 1; i < names.Length; ++i)
-                this.hiddenCmds.Add(names[i], func);
+                this.registerHiddenCmd(names[i], func);
         }
 
         public void unregisterCommand(string name)
