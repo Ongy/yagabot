@@ -24,5 +24,10 @@ namespace TwitchBot {
         public int getLvl() {
             return lvl;
         }
+
+        public void updateFrom(Command cmd) {
+            this.response = cmd.response;
+            this.lvl = cmd.lvl;
+        }
     }
 }

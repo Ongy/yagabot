@@ -59,9 +59,10 @@ namespace TwitchBot {
 
     class Modules
     {
+        public delegate void ModuleStateChanged(bool newState);
+
         private bool _announce;
-        private bool _secret;
-        private bool _foodbox;
+        public event ModuleStateChanged announceChanged;
         public bool announce
         {
             get { return this._announce; }
@@ -69,6 +70,9 @@ namespace TwitchBot {
                 if (this.announceChanged !=null)
                     this.announceChanged(value); }
         }
+
+        private bool _secret;
+        public event ModuleStateChanged secretChanged;
         public bool secret
         {
             get { return this._secret; }
@@ -76,6 +80,9 @@ namespace TwitchBot {
                 if (this.secretChanged != null)
                     this.secretChanged(value); }
         }
+
+        private bool _foodbox;
+        public event ModuleStateChanged foodboxChanged;
         public bool foodbox
         {
             get { return this._foodbox; }
@@ -84,20 +91,26 @@ namespace TwitchBot {
                     this.foodboxChanged(value); }
         }
 
-        public delegate void ModuleStateChanged(bool newState);
-        public event ModuleStateChanged announceChanged;
-        public event ModuleStateChanged secretChanged;
-        public event ModuleStateChanged foodboxChanged;
+        private bool _hromp;
+        public event ModuleStateChanged hrompChanged;
+        public bool hromp
+        {
+            get { return this._hromp; }
+            set { this._hromp = value;
+                if (this.hrompChanged != null)
+                    this.hrompChanged(value); }
+        }
 
         public Modules()
         {
-            this.announce = this.secret = this.foodbox = true;
+            this.announce = this.secret = this.foodbox = this.hromp = true;
         }
 
-        public Modules(bool announce, bool secret, bool foodbox)
+        public Modules(bool announce, bool secret, bool hromp, bool foodbox)
         {
             this.announce = announce;
             this.secret = secret;
+            this.hromp = hromp;
             this.foodbox = foodbox;
         }
     }
@@ -256,11 +269,20 @@ namespace TwitchBot {
             return false;
         }
 
-        public Rabite getRabite(string user) {
+        public Tuple<bool, Rabite> getRabite(string user) {
             if (this.rabites.ContainsKey(user))
-                return this.rabites[user];
+                return Tuple.Create(true, this.rabites[user]);
 
-            return this.rabites["channel"];
+            return Tuple.Create(false, this.rabites["channel"]);
+        }
+
+        public List<Rabite> getRabites() {
+            List<Rabite> ret = new List<Rabite>();
+
+            foreach (KeyValuePair<string, Rabite> kv in this.rabites)
+                ret.Add(kv.Value);
+
+            return ret;
         }
 
         private void loadCommands() {
@@ -325,8 +347,18 @@ namespace TwitchBot {
             return null;
         }
 
-        public void addCommand(Command cmd) {
-            this.commands.Add(cmd);
+        public void addCommand(Command newCmd) {
+            bool found = false;
+            foreach (Command cmd in this.commands) {
+                if (cmd.cmdStr.Equals(newCmd.cmdStr)) {
+                    cmd.updateFrom(newCmd);
+                    found = true;
+                }
+            }
+
+            if (!found)
+                this.commands.Add(newCmd);
+
             this.saveCommands();
         }
 

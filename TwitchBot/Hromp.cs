@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using System.Collections.Generic;
 
 namespace TwitchBot {
@@ -23,8 +24,10 @@ namespace TwitchBot {
     class HrompManager {
         private Random petRand;
         private Random expRand;
-        private Rabite current;
         private Rabite newBorn;
+
+        private Rabite current;
+        private string currentOwner;
 
         private string rabiteLevel(Rabite rabite, bool isOwner, int exp) {
             string owner = rabite.owner + "'s";
@@ -45,9 +48,9 @@ namespace TwitchBot {
         }
 
         private string lvlRabite(Message msg, int amount) {
-            Rabite rabite = Config.instance().getRabite(msg.user);
+            Tuple<bool, Rabite> tuple = Config.instance().getRabite(msg.user);
 
-            return rabiteLevel(rabite, msg.getName().Equals(rabite.owner), amount);
+            return rabiteLevel(tuple.Item2, tuple.Item1, amount);
         }
 
         private string doCreate(Message msg) {
@@ -88,26 +91,72 @@ namespace TwitchBot {
 
             if (answers != null && answers.Count > 0) {
                 string resp = answers[this.petRand.Next(answers.Count)];
+                string owner = this.current.owner + "'s";
 
-                return resp.Replace("{owner}", this.current.owner);
+                if (this.currentOwner.Equals(msg.user))
+                    owner = "their";
+
+                return resp.Replace("{owner}", owner);
+
             }
 
             return "Sorry can't pet without a valid response";
         }
 
+        private string listRabites(Message msg, string c) {
+            if (!msg.isMod())
+                return "This command is currently limited to mods.";
+
+            List<Rabite> rabites = Config.instance().getRabites();
+
+            StringBuilder builder = new StringBuilder();
+            foreach (Rabite rabite in rabites) {
+                builder.Append("Owner: ");
+                builder.Append(rabite.owner);
+                builder.Append(", Exp: ");
+                builder.Append(rabite.exp);
+                builder.Append(", Lvl: ");
+                builder.Append(rabite.level);
+                builder.Append('\n');
+            }
+
+            return builder.ToString();
+        }
+
         private void setCurrent(Message msg, string c) {
-            this.current = Config.instance().getRabite(msg.user);
+            Tuple<bool, Rabite> tuple = Config.instance().getRabite(msg.user);
+            this.current = tuple.Item2;
+
+            if (tuple.Item1)
+                this.currentOwner = msg.user;
+            else
+                this.currentOwner = "";
+        }
+
+        private void changeActive(bool active) {
+            if (active) {
+                CommandRegistry.instance().registerCommand("hromp", this.doHromp);
+                CommandRegistry.instance().registerCommand("pet", this.doPet);
+                CommandRegistry.instance().registerHiddenCmd("adopt", this.doAdopt);
+                CommandRegistry.instance().registerHiddenCmd("rabiteden", this.listRabites);
+            } else {
+                CommandRegistry.instance().unregisterCommand("hromp");
+                CommandRegistry.instance().unregisterCommand("pet");
+                CommandRegistry.instance().unregisterCommand("adopt");
+                CommandRegistry.instance().unregisterCommand("rabiteden");
+            }
         }
 
         public HrompManager() {
-            this.current = Config.instance().getRabite("channel");
+            this.current = Config.instance().getRabite("channel").Item2;
+            this.currentOwner = "";
             this.expRand = new Random();
             this.petRand = new Random();
             this.newBorn = null;
 
-            CommandRegistry.instance().registerCommand("hromp", this.doHromp);
-            CommandRegistry.instance().registerCommand("pet", this.doPet);
-            CommandRegistry.instance().registerHiddenCmd("adopt", this.doAdopt);
+            if (Config.instance().settings.modules.hromp) {
+                this.changeActive(true);
+            }
 
             YagaBot.instance().chatReceived += this.setCurrent;
         }

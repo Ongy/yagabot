@@ -58,6 +58,7 @@ namespace TwitchBot {
         private string addCommand(Message msg, string command) {
             if (!msg.isMod())
                 return "You need moderator privileges to add a command";
+
             int lvl = 0;
             string[] splits = command.Split(Constants.spaceArray, 3);
             try {
