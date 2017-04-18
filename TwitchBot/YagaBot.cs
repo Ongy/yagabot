@@ -164,6 +164,7 @@ namespace TwitchBot {
             /* call instance() method once to make sure it is created */
             SecretManager.instance();
             Announcer.instance();
+            Kraken.instance();
             new FoodBox();
             new QuoteManager();
             new HrompManager();

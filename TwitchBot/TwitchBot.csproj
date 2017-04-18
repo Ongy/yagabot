@@ -125,8 +125,10 @@
       <DependentUpon>BotGUI.cs</DependentUpon>
     </Compile>
     <Compile Include="Config.cs" />
+    <Compile Include="Kraken.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="TwitchIRC.cs" />
+    <Compile Include="TwitchApi.cs" />
     <Compile Include="YagaBot.cs" />
     <Compile Include="Foodbox.cs" />
     <Compile Include="Hromp.cs" />
