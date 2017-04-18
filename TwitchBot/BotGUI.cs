@@ -12,13 +12,15 @@ namespace TwitchBot
 
         public BotGUI() {
             InitializeComponent();
-            
+
             setFromConfig();
 
             this.Closing += this.closing;
 
+            YagaBot.instance();
+
 //            YagaBot.instance().lineReceived += this.appendRaw;
-//            YagaBot.instance().chatReceived += this.appendChat;
+            YagaBot.instance().chatReceived += this.appendChat;
             SecretManager.instance().secretUpdated += this.secretUpdate;
 
             if (Config.instance().settings.autoconnect)

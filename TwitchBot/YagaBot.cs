@@ -185,16 +185,15 @@ namespace TwitchBot {
             if (this.irc == null)
                 return;
 
-            this.irc.sendMsg(message);
+            string[] splits = message.Split(Constants.newliArray);
+            foreach (string split in splits) {
+                if (!"".Equals(split))
+                    this.irc.sendMsg(split);
+            }
         }
 
         public void sendMessage(Message cxt, string message) {
-            if (this.irc == null)
-                return;
-
-            string[] splits = message.Split(Constants.newliArray);
-            foreach (string split in splits)
-                this.irc.sendMsg(split.Replace("{user}", cxt.getName()));
+            this.sendMessage(message.Replace("{user}", cxt.getName()));
         }
 
 
