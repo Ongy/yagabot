@@ -39,10 +39,9 @@ namespace TwitchBot {
                     builder.Append(", ");
                 }
 
-                string tmp = builder.ToString();
-
                 /* Remove the last ", " that got added in after the last item */
-                this.foods = tmp.Substring(0, tmp.Length - 2);
+                builder.Length -= 2;
+                this.foods = builder.ToString();
             }
 
             return this.foods;
