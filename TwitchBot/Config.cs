@@ -101,17 +101,31 @@ namespace TwitchBot {
                     this.hrompChanged(value); }
         }
 
-        public Modules()
+        private bool _kraken;
+        public event ModuleStateChanged krakenChanged;
+        public bool kraken
         {
-            this.announce = this.secret = this.foodbox = this.hromp = true;
+            get { return this._kraken; }
+            set
+            {
+                this._kraken= value;
+                if (this.krakenChanged != null)
+                    this.krakenChanged(value);
+            }
         }
 
-        public Modules(bool announce, bool secret, bool hromp, bool foodbox)
+        public Modules()
+        {
+            this.announce = this.secret = this.foodbox = this.hromp = this.kraken = true;
+        }
+
+        public Modules(bool announce, bool secret, bool hromp, bool kraken, bool foodbox)
         {
             this.announce = announce;
             this.secret = secret;
             this.hromp = hromp;
             this.foodbox = foodbox;
+            this.kraken = kraken;
         }
     }
 

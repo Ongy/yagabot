@@ -120,6 +120,7 @@ namespace TwitchBot {
             this.irc = new TwitchIRC.TwitchIRC(channel, name, oauth);
             irc.connect();
             irc.join();
+            Kraken.instance().connect();
 
             if (this.chatConnected != null)
                 this.chatConnected();

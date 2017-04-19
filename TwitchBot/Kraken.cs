@@ -16,7 +16,20 @@ namespace TwitchBot {
 
         private Kraken() { }
 
-        private void init() {
+        private void changeActive(bool active)
+        {
+            if (active)
+            {
+                CommandRegistry.instance().registerCommand("game", this.getGame);
+                CommandRegistry.instance().registerCommand("title", this.getTitle);
+            } else
+            {
+                CommandRegistry.instance().unregisterCommand("game");
+                CommandRegistry.instance().unregisterCommand("title");
+            }
+        }
+
+        public void connect() {
             string channel = Config.instance().settings.channel;
             if (channel[0] == '#') {
                 channel = channel.Substring(1);
@@ -25,14 +38,15 @@ namespace TwitchBot {
            this. api = new TwitchApi(channel);
            this.channelId = api.getChannelId();
 
-           CommandRegistry.instance().registerCommand("game", this.getGame);
-           CommandRegistry.instance().registerCommand("title", this.getTitle);
+            if (Config.instance().settings.modules.kraken)
+                this.changeActive(true);
+
+            Config.instance().settings.modules.krakenChanged += this.changeActive;
         }
 
         public static Kraken instance() {
             if (obj == null) {
                 obj = new Kraken();
-                obj.init();
             }
 
             return obj;

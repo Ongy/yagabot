@@ -125,6 +125,8 @@ namespace TwitchBot
             this.AnnounceBox.Checked = modules.announce;
             this.Secretbox.Checked = modules.secret;
             this.FoodboxBox.Checked = modules.foodbox;
+            this.Hromp.Checked = modules.hromp;
+            this.Kraken.Checked = modules.kraken;
             this.checkBoxAutoconnect.Checked = Config.instance().settings.autoconnect;
         }
 
@@ -224,6 +226,16 @@ namespace TwitchBot
         private void AddAnnounce_Click(object sender, EventArgs e)
         {
             this.AnnouncerList.Controls.Add(new AnnounceControl());
+        }
+
+        private void Hromp_CheckedChanged(object sender, EventArgs e)
+        {
+            Config.instance().settings.modules.hromp = this.Hromp.Checked;
+        }
+
+        private void Kraken_CheckedChanged(object sender, EventArgs e)
+        {
+            Config.instance().settings.modules.kraken = this.Kraken.Checked;
         }
     }
 }

@@ -303,6 +303,60 @@
   <data name="&gt;&gt;Secretbar.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
+  <data name="Kraken.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="Kraken.Location" type="System.Drawing.Point, System.Drawing">
+    <value>29, 131</value>
+  </data>
+  <data name="Kraken.Size" type="System.Drawing.Size, System.Drawing">
+    <value>60, 17</value>
+  </data>
+  <data name="Kraken.TabIndex" type="System.Int32, mscorlib">
+    <value>23</value>
+  </data>
+  <data name="Kraken.Text" xml:space="preserve">
+    <value>Kraken</value>
+  </data>
+  <data name="&gt;&gt;Kraken.Name" xml:space="preserve">
+    <value>Kraken</value>
+  </data>
+  <data name="&gt;&gt;Kraken.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;Kraken.Parent" xml:space="preserve">
+    <value>panel7</value>
+  </data>
+  <data name="&gt;&gt;Kraken.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="Hromp.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="Hromp.Location" type="System.Drawing.Point, System.Drawing">
+    <value>29, 106</value>
+  </data>
+  <data name="Hromp.Size" type="System.Drawing.Size, System.Drawing">
+    <value>57, 17</value>
+  </data>
+  <data name="Hromp.TabIndex" type="System.Int32, mscorlib">
+    <value>22</value>
+  </data>
+  <data name="Hromp.Text" xml:space="preserve">
+    <value>Hromp</value>
+  </data>
+  <data name="&gt;&gt;Hromp.Name" xml:space="preserve">
+    <value>Hromp</value>
+  </data>
+  <data name="&gt;&gt;Hromp.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;Hromp.Parent" xml:space="preserve">
+    <value>panel7</value>
+  </data>
+  <data name="&gt;&gt;Hromp.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
   <data name="Secretbox.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -328,7 +382,7 @@
     <value>panel7</value>
   </data>
   <data name="&gt;&gt;Secretbox.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>2</value>
   </data>
   <data name="FoodboxBox.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -355,7 +409,7 @@
     <value>panel7</value>
   </data>
   <data name="&gt;&gt;FoodboxBox.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>3</value>
   </data>
   <data name="AnnounceBox.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -382,7 +436,7 @@
     <value>panel7</value>
   </data>
   <data name="&gt;&gt;AnnounceBox.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>4</value>
   </data>
   <data name="label16.Font" type="System.Drawing.Font, System.Drawing">
     <value>Microsoft Sans Serif, 10pt, style=Underline</value>
@@ -412,7 +466,7 @@
     <value>panel7</value>
   </data>
   <data name="&gt;&gt;label16.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>5</value>
   </data>
   <data name="panel7.Location" type="System.Drawing.Point, System.Drawing">
     <value>143, 254</value>

@@ -28,13 +28,14 @@
             this.chatInput = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.AddAnnounce = new System.Windows.Forms.Button();
             this.AnnouncerList = new System.Windows.Forms.FlowLayoutPanel();
             this.AnnouncersSet = new System.Windows.Forms.Button();
             this.Secretbar = new System.Windows.Forms.TrackBar();
             this.panel7 = new System.Windows.Forms.Panel();
+            this.Kraken = new System.Windows.Forms.CheckBox();
+            this.Hromp = new System.Windows.Forms.CheckBox();
             this.Secretbox = new System.Windows.Forms.CheckBox();
             this.FoodboxBox = new System.Windows.Forms.CheckBox();
             this.AnnounceBox = new System.Windows.Forms.CheckBox();
@@ -67,16 +68,17 @@
             this.label1 = new System.Windows.Forms.Label();
             this.labelConnection = new System.Windows.Forms.Label();
             this.buttonConnect = new System.Windows.Forms.Button();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.chatBoxRaw = new System.Windows.Forms.RichTextBox();
             this.tabControl1.SuspendLayout();
-            this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Secretbar)).BeginInit();
             this.panel7.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.tabPage1.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -107,15 +109,6 @@
             resources.ApplyResources(this.tabControl1, "tabControl1");
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            // 
-            // tabPage1
-            // 
-            this.tabPage1.Controls.Add(this.chatBox);
-            this.tabPage1.Controls.Add(this.chatInput);
-            this.tabPage1.Controls.Add(this.button1);
-            resources.ApplyResources(this.tabPage1, "tabPage1");
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // tabPage2
             // 
@@ -162,12 +155,28 @@
             // panel7
             // 
             this.panel7.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panel7.Controls.Add(this.Kraken);
+            this.panel7.Controls.Add(this.Hromp);
             this.panel7.Controls.Add(this.Secretbox);
             this.panel7.Controls.Add(this.FoodboxBox);
             this.panel7.Controls.Add(this.AnnounceBox);
             this.panel7.Controls.Add(this.label16);
             resources.ApplyResources(this.panel7, "panel7");
             this.panel7.Name = "panel7";
+            // 
+            // Kraken
+            // 
+            resources.ApplyResources(this.Kraken, "Kraken");
+            this.Kraken.Name = "Kraken";
+            this.Kraken.UseVisualStyleBackColor = true;
+            this.Kraken.CheckedChanged += new System.EventHandler(this.Kraken_CheckedChanged);
+            // 
+            // Hromp
+            // 
+            resources.ApplyResources(this.Hromp, "Hromp");
+            this.Hromp.Name = "Hromp";
+            this.Hromp.UseVisualStyleBackColor = true;
+            this.Hromp.CheckedChanged += new System.EventHandler(this.Hromp_CheckedChanged);
             // 
             // Secretbox
             // 
@@ -371,6 +380,15 @@
             this.buttonConnect.UseVisualStyleBackColor = true;
             this.buttonConnect.Click += new System.EventHandler(this.buttonConnect_Click);
             // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.chatBox);
+            this.tabPage1.Controls.Add(this.chatInput);
+            this.tabPage1.Controls.Add(this.button1);
+            resources.ApplyResources(this.tabPage1, "tabPage1");
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
             // tabPage3
             // 
             this.tabPage3.Controls.Add(this.chatBoxRaw);
@@ -391,8 +409,6 @@
             this.MaximizeBox = false;
             this.Name = "BotGUI";
             this.tabControl1.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
-            this.tabPage1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Secretbar)).EndInit();
@@ -404,6 +420,8 @@
             this.panel2.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -456,6 +474,8 @@
         private System.Windows.Forms.Button AnnouncersSet;
         private System.Windows.Forms.FlowLayoutPanel AnnouncerList;
         private System.Windows.Forms.Button AddAnnounce;
+        private System.Windows.Forms.CheckBox Kraken;
+        private System.Windows.Forms.CheckBox Hromp;
     }
 }
 
