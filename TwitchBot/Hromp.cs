@@ -135,9 +135,17 @@ namespace TwitchBot {
 
         private string whisperRabites(Message msg, string c) {
             List<Rabite> rabites = Config.instance().getRabites();
-            
+            string filter = null;
+
+            if (c != null)
+                filter = c.ToLower();
+
             StringBuilder builder = new StringBuilder();
             foreach (Rabite rabite in rabites) {
+                if (filter != null) {
+                    if (!filter.Equals(rabite.owner.ToLower()))
+                        continue;
+                }
                 builder.Append("Owner: ");
                 builder.Append(rabite.owner);
                 if (msg.isMod()) {

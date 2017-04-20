@@ -1,10 +1,22 @@
 using System;
+using System.Text;
 using System.Collections.Generic;
 
 namespace TwitchBot {
     class WhisperCommands {
         private static WhisperCommands obj;
         private Dictionary<string, Func<Message, string, string>> funcs;
+
+        private string listCommands(Message m, string c) {
+            StringBuilder builder = new StringBuilder("Commandlist:");
+
+            foreach (var kv in this.funcs) {
+                builder.Append(" !");
+                builder.Append(kv.Key);
+            }
+
+            return builder.ToString();
+        }
 
         void handleIncomming(Message msg, string content) {
             if (content[0] != '!')
@@ -30,6 +42,7 @@ namespace TwitchBot {
 
         private void init() {
             YagaBot.instance().recvWhisper += this.handleIncomming;
+            this.addCommand("commands", this.listCommands);
         }
 
         private WhisperCommands() {
