@@ -1,6 +1,7 @@
-﻿using System.Threading.Tasks;
-using System.Net.Sockets;
+﻿using System;
 using System.IO;
+using System.Net.Sockets;
+using System.Threading.Tasks;
 
 namespace TwitchIRC {
 
@@ -43,7 +44,9 @@ namespace TwitchIRC {
         }
 
         public void sendWhisper(string text, string user) {
-            send("PRIVMSG", "#jtv :/w " + user + " " + text);
+            send("PRIVMSG", String.Format("#jtv :/w {0} {1}", user, text));
+            /* This is the format we currently get from the server */
+            //send("WHISPER", String.Format("{0} :{1}", user, text));
         }
 
         public void join() {

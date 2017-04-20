@@ -166,6 +166,7 @@ namespace TwitchBot {
             SecretManager.instance();
             Announcer.instance();
             Kraken.instance();
+            WhisperCommands.instance();
             new FoodBox();
             new QuoteManager();
             new HrompManager();
@@ -189,6 +190,9 @@ namespace TwitchBot {
         public delegate void ChatLine(Message msg, string line);
         public event ChatLine chatReceived;
 
+        public delegate void ReceivedWhisper(Message msg, string content);
+        public event ReceivedWhisper recvWhisper;
+
         public void sendMessage(string message) {
             if (this.irc == null)
                 return;
@@ -210,6 +214,12 @@ namespace TwitchBot {
             this.sendMessage(message.Replace("{user}", cxt.getName()));
         }
 
+        public void answerWhisper(Message cxt, string message) {
+            string[] splits = message.Split(Constants.newliArray);
+
+            foreach (string split in splits)
+                this.irc.sendWhisper(split, cxt.user);
+        }
 
         private void handleNotify(string message) {
             char[] subSep = { ':' };
@@ -254,8 +264,18 @@ namespace TwitchBot {
             irc.sendMsg(react);
         }
 
+        private void handleWHISPER(Message msg) {
+            string[] lines = msg.content.Split(Constants.spaceArray, 2);
+            string line = lines[1].Substring(1);
+
+            if (this.recvWhisper != null)
+                        recvWhisper(msg, line);
+        }
+
         private void handlePRIVMSG(Message msg) {
-            string line = msg.content.Split(Constants.spaceArray, 2)[1].Substring(1);
+            string[] lines = msg.content.Split(Constants.spaceArray, 2);
+            string line = lines[1].Substring(1);
+
             chatReceived(msg, line);
         }
 
@@ -268,6 +288,8 @@ namespace TwitchBot {
                 irc.send("PONG", ":tmi.twitch.tv");
             } else if (msg.command.Equals("USERNOTICE")) {
                 this.handleResub(msg);
+            } else if (msg.command.Equals("WHISPER")) {
+                this.handleWHISPER(msg);
             } else if (msg.command.Equals("PRIVMSG")) {
                 if (msg.user.Equals("twitchnotify"))
                     this.handleNotify(message);

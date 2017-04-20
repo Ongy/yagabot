@@ -34,7 +34,7 @@ namespace TwitchBot {
             if (isOwner)
                 owner = "their";
 
-            string ret = String.Format("{2} played and trained with {0}'s rabite. It earned {1} exp. yagaHappy", owner, exp, "{user}");
+            string ret = String.Format("{2} played and trained with {0} rabite. It earned {1} exp. yagaHappy", owner, exp, "{user}");
             rabite.exp += exp;
             int newLvl = (int) (3 * Math.Log(rabite.exp));
 
@@ -133,17 +133,38 @@ namespace TwitchBot {
                 this.currentOwner = "";
         }
 
+        private string whisperRabites(Message msg, string c) {
+            List<Rabite> rabites = Config.instance().getRabites();
+            
+            StringBuilder builder = new StringBuilder();
+            foreach (Rabite rabite in rabites) {
+                builder.Append("Owner: ");
+                builder.Append(rabite.owner);
+                if (msg.isMod()) {
+                    builder.Append(", Exp: ");
+                    builder.Append(rabite.exp);
+                }
+                builder.Append(", Lvl: ");
+                builder.Append(rabite.level);
+                builder.Append('\n');
+            }
+
+            return builder.ToString();
+        }
+
         private void changeActive(bool active) {
             if (active) {
                 CommandRegistry.instance().registerCommand("hromp", this.doHromp);
                 CommandRegistry.instance().registerCommand("pet", this.doPet);
                 CommandRegistry.instance().registerHiddenCmd("adopt", this.doAdopt);
                 CommandRegistry.instance().registerHiddenCmd("rabiteden", this.listRabites);
+                WhisperCommands.instance().addCommand("rabites", this.whisperRabites);
             } else {
                 CommandRegistry.instance().unregisterCommand("hromp");
                 CommandRegistry.instance().unregisterCommand("pet");
                 CommandRegistry.instance().unregisterCommand("adopt");
                 CommandRegistry.instance().unregisterCommand("rabiteden");
+                WhisperCommands.instance().delCommand("rabites");
             }
         }
 
