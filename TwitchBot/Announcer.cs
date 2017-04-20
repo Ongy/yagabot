@@ -31,15 +31,25 @@ namespace TwitchBot
             YagaBot.instance().chatConnected += this.connectSpam;
         }
 
+        private static bool isActive(Announcement x) {
+            if (!x.active)
+                return false;
+
+            if (x.game == null || "".Equals(x.game) || "game".Equals(x.game))
+                    return true;
+
+            return Kraken.instance().getGame().Equals(x.game);
+        }
+
         private void connectSpam() {
-            List<Announcement> actives = Config.instance().announces.FindAll((Announcement x) => x.active);
+            List<Announcement> actives = Config.instance().announces.FindAll(isActive);
             foreach (Announcement announcement in actives)
                 YagaBot.instance().sendMessage(announcement.message);
         }
 
         private void doAnnounce()
         {
-            List<Announcement> actives = Config.instance().announces.FindAll((Announcement x) => x.active);
+            List<Announcement> actives = Config.instance().announces.FindAll(isActive);
             int sumOfWeights = 0;
             foreach (Announcement a in actives)
                 sumOfWeights += a.weight;
@@ -71,12 +81,10 @@ namespace TwitchBot
 
         private void changeState(bool active)
         {
-            if (active)
-            {
+            if (active) {
                 int interval = Config.instance().settings.timings.announceTimer;
                 TimingManager.instance().addPeriodic("announcer", interval, this.doAnnounce);
-            } else
-            {
+            } else {
                 TimingManager.instance().removeTimer("announcer");
             }
         }

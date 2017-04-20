@@ -53,8 +53,12 @@ namespace TwitchBot {
                     () => this._channelInfo = this.api.getParsed<ChannelInfo>("channels/" + this.channelId));
         }
 
-        private string getGame(Message m, string c) {
+        public string getGame() {
             return this.channelInfo.game;
+        }
+
+        private string getGame(Message m, string c) {
+            return this.getGame();
         }
 
         private string getTitle(Message m, string c) {
