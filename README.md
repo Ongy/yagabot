@@ -4,6 +4,7 @@ This is the repository for the yagabot.
 
 # Dependencies
  * Newtonsoft.JSON
+ * Git has to be in PATH to build (to auto-generate git-version string)
 
 # Short Guide:
  * Most things are implemented as Singleton
