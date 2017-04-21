@@ -4,17 +4,31 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using TwitchBot;
 
 namespace TwitchBot
 {
     public partial class BotGUI :Form {
 
+        private void setVersionLabel()
+        {
+            string gitVersion = "Failed to read";
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("TwitchBot.version.txt"))
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                gitVersion = reader.ReadToEnd();
+            }
+
+            this.VersionLabel.Text = "Git version: " + gitVersion;
+        }
+
         public BotGUI() {
-            YagaBot.instance();
 
             InitializeComponent();
+            this.setVersionLabel();
 
+            YagaBot.instance();
             /* Force the yagabot to start up stuff */
             setFromConfig();
 

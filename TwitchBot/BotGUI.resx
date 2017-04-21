@@ -204,6 +204,33 @@
   <data name="&gt;&gt;button1.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
+  <data name="VersionLabel.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="VersionLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>990, 473</value>
+  </data>
+  <data name="VersionLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>104, 13</value>
+  </data>
+  <data name="VersionLabel.TabIndex" type="System.Int32, mscorlib">
+    <value>21</value>
+  </data>
+  <data name="VersionLabel.Text" xml:space="preserve">
+    <value>failed to load version</value>
+  </data>
+  <data name="&gt;&gt;VersionLabel.Name" xml:space="preserve">
+    <value>VersionLabel</value>
+  </data>
+  <data name="&gt;&gt;VersionLabel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;VersionLabel.Parent" xml:space="preserve">
+    <value>tabPage2</value>
+  </data>
+  <data name="&gt;&gt;VersionLabel.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="AddAnnounce.Location" type="System.Drawing.Point, System.Drawing">
     <value>990, 7</value>
   </data>
@@ -226,7 +253,7 @@
     <value>tabPage2</value>
   </data>
   <data name="&gt;&gt;AddAnnounce.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>1</value>
   </data>
   <data name="AnnouncerList.AutoScroll" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -256,7 +283,7 @@
     <value>tabPage2</value>
   </data>
   <data name="&gt;&gt;AnnouncerList.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>2</value>
   </data>
   <data name="AnnouncersSet.Location" type="System.Drawing.Point, System.Drawing">
     <value>585, 463</value>
@@ -280,7 +307,7 @@
     <value>tabPage2</value>
   </data>
   <data name="&gt;&gt;AnnouncersSet.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>3</value>
   </data>
   <data name="Secretbar.Location" type="System.Drawing.Point, System.Drawing">
     <value>143, 196</value>
@@ -301,7 +328,7 @@
     <value>tabPage2</value>
   </data>
   <data name="&gt;&gt;Secretbar.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>4</value>
   </data>
   <data name="Kraken.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -487,7 +514,7 @@
     <value>tabPage2</value>
   </data>
   <data name="&gt;&gt;panel7.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>5</value>
   </data>
   <data name="buttonConnectionDataSave.Location" type="System.Drawing.Point, System.Drawing">
     <value>29, 146</value>
@@ -715,7 +742,7 @@
     <value>tabPage2</value>
   </data>
   <data name="&gt;&gt;panel3.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>6</value>
   </data>
   <data name="label10.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -1072,7 +1099,7 @@
     <value>tabPage2</value>
   </data>
   <data name="&gt;&gt;panel2.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>7</value>
   </data>
   <data name="checkBoxAutoconnect.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -1201,7 +1228,7 @@
     <value>tabPage2</value>
   </data>
   <data name="&gt;&gt;panel1.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>8</value>
   </data>
   <data name="tabPage2.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 22</value>

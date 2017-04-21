@@ -71,6 +71,7 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.chatBoxRaw = new System.Windows.Forms.RichTextBox();
+            this.VersionLabel = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Secretbar)).BeginInit();
@@ -112,6 +113,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.VersionLabel);
             this.tabPage2.Controls.Add(this.AddAnnounce);
             this.tabPage2.Controls.Add(this.AnnouncerList);
             this.tabPage2.Controls.Add(this.AnnouncersSet);
@@ -401,6 +403,11 @@
             resources.ApplyResources(this.chatBoxRaw, "chatBoxRaw");
             this.chatBoxRaw.Name = "chatBoxRaw";
             // 
+            // VersionLabel
+            // 
+            resources.ApplyResources(this.VersionLabel, "VersionLabel");
+            this.VersionLabel.Name = "VersionLabel";
+            // 
             // BotGUI
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
@@ -476,6 +483,7 @@
         private System.Windows.Forms.Button AddAnnounce;
         private System.Windows.Forms.CheckBox Kraken;
         private System.Windows.Forms.CheckBox Hromp;
+        private System.Windows.Forms.Label VersionLabel;
     }
 }
 

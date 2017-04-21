@@ -5,3 +5,6 @@
 *.json
 *.ini
 data/
+packages
+TwitchBot/packages.config
+TwitchBot/version.txt
